@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.Gravity
+import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.R
@@ -45,7 +46,15 @@ class InspeccionChalecoScreen(private val activity: Activity) {
     private val areaDepartamento = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val volante = Ui.spinner(activity, FormOptions.volantes)
     private val empleado = Ui.input(activity, "Empleado inspeccionado")
+    private val idEmpleado = Ui.input(activity, "ID empleado")
     private val puesto = Ui.spinner(activity, FormOptions.puestos)
+    private val departamentoJefe = Ui.spinner(activity, FormOptions.areasDepartamentos)
+    private val departamentoJefeContainer = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+        visibility = View.GONE
+        addView(Ui.label(activity, "Departamento del jefe"))
+        addView(departamentoJefe)
+    }
     private val supervisor = Ui.input(activity, "Supervisor / HSE")
     private val observacionesGenerales = Ui.input(activity, "Observaciones generales", 3)
     private val photos = PhotoAttachmentPanel(activity)
@@ -76,7 +85,10 @@ class InspeccionChalecoScreen(private val activity: Activity) {
             addLabeled("Área / Departamento", areaDepartamento)
             addLabeled("Volante", volante)
             addLabeled("Empleado inspeccionado", empleado)
+            addLabeled("ID empleado", idEmpleado)
             addLabeled("Puesto", puesto)
+            addView(departamentoJefeContainer)
+            configurarDepartamentoJefe()
             addLabeled("Supervisor / HSE", supervisor)
         })
 
@@ -120,6 +132,22 @@ class InspeccionChalecoScreen(private val activity: Activity) {
         if (DEBUG_CHALECO) cargarDatosPrueba()
         actualizarResumen()
     })
+
+    private fun configurarDepartamentoJefe() {
+        puesto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun puestoFinal(): String {
+        val seleccionado = puesto.selectedItem?.toString().orEmpty()
+        return if (seleccionado == "Jefe de Departamento") {
+            "$seleccionado - ${departamentoJefe.selectedItem}"
+        } else seleccionado
+    }
 
     private fun LinearLayout.addLabeled(label: String, view: android.view.View) {
         addView(Ui.label(activity, label))
@@ -250,6 +278,7 @@ class InspeccionChalecoScreen(private val activity: Activity) {
 
     private fun cargarDatosPrueba() {
         empleado.setText("Personal de prueba")
+        idEmpleado.setText("12345")
         supervisor.setText("Jonh Smith")
         observacionesGenerales.setText("Inspección visual de chaleco salvavidas realizada en campo.")
         partes[0].estado = EstadoParte.CORRECTO
@@ -295,7 +324,9 @@ class InspeccionChalecoScreen(private val activity: Activity) {
                     .put("area_departamento", selected(areaDepartamento))
                     .put("volante", selected(volante))
                     .put("empleado", empleado.text.toString())
-                    .put("puesto", selected(puesto))
+                    .put("id_empleado", idEmpleado.text.toString())
+                    .put("puesto", puestoFinal())
+                    .put("departamento_jefe", selected(departamentoJefe))
                     .put("supervisor_hse", supervisor.text.toString()))
                 put("partes", JSONArray().apply {
                     partes.forEach { p -> put(JSONObject()
@@ -324,7 +355,8 @@ class InspeccionChalecoScreen(private val activity: Activity) {
             "Área/Departamento: ${selected(areaDepartamento)}",
             "Volante: ${selected(volante)}",
             "Empleado: ${empleado.text}",
-            "Puesto: ${selected(puesto)}",
+            "ID empleado: ${idEmpleado.text}",
+            "Puesto: ${puestoFinal()}",
             "Supervisor/HSE: ${supervisor.text}",
             "Dictamen final: ${dictamen()}",
             "Observaciones generales: ${observacionesGenerales.text}",

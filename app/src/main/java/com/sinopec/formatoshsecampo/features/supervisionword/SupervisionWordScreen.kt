@@ -1,6 +1,7 @@
 package com.sinopec.formatoshsecampo.features.supervisionword
 
 import android.app.Activity
+import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
@@ -32,6 +33,13 @@ class SupervisionWordScreen(private val activity: Activity) {
     private val departamento = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val quienSupervisa = Ui.input(activity, "Nombre de quien supervisa")
     private val puesto = Ui.spinner(activity, FormOptions.puestos)
+    private val departamentoJefe = Ui.spinner(activity, FormOptions.areasDepartamentos)
+    private val departamentoJefeContainer = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+        visibility = View.GONE
+        addView(Ui.label(activity, "Departamento del jefe"))
+        addView(departamentoJefe)
+    }
     private val supervisorTrabajo = Ui.input(activity, "Nombre del supervisor del trabajo")
     private val observaciones = Ui.input(activity, "Observaciones", 4)
     private val photos = PhotoAttachmentPanel(activity)
@@ -69,6 +77,8 @@ class SupervisionWordScreen(private val activity: Activity) {
         addView(Ui.label(activity, "Departamento supervisado")); addView(departamento)
         addView(quienSupervisa)
         addView(Ui.label(activity, "Puesto que ocupa")); addView(puesto)
+        addView(departamentoJefeContainer)
+        configurarDepartamentoJefe()
         addView(supervisorTrabajo)
         addView(Ui.section(activity, "Lista de chequeo"))
         preguntas.forEachIndexed { i, q ->
@@ -86,6 +96,22 @@ class SupervisionWordScreen(private val activity: Activity) {
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
 
+
+    private fun configurarDepartamentoJefe() {
+        puesto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun puestoFinal(): String {
+        val seleccionado = puesto.selectedItem?.toString().orEmpty()
+        return if (seleccionado == "Jefe de Departamento") {
+            "$seleccionado - ${departamentoJefe.selectedItem}"
+        } else seleccionado
+    }
 
     /**
      * Carga datos de prueba para generar el PDF sin llenar el formulario a mano.
@@ -113,13 +139,13 @@ class SupervisionWordScreen(private val activity: Activity) {
             override val format = HseFormat.SUPERVISION_WORD
             override val folio = "FSS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
-                put("datos_generales", JSONObject().put("brigada", brigada.selectedItem.toString()).put("proyecto", proyecto.selectedItem.toString()).put("departamento_supervisado", departamento.selectedItem.toString()).put("quien_supervisa", quienSupervisa.text.toString()).put("puesto", puesto.selectedItem.toString()).put("supervisor_trabajo", supervisorTrabajo.text.toString()))
+                put("datos_generales", JSONObject().put("brigada", brigada.selectedItem.toString()).put("proyecto", proyecto.selectedItem.toString()).put("departamento_supervisado", departamento.selectedItem.toString()).put("quien_supervisa", quienSupervisa.text.toString()).put("puesto", puestoFinal()).put("departamento_jefe", departamentoJefe.selectedItem.toString()).put("supervisor_trabajo", supervisorTrabajo.text.toString()))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("pregunta", q).put("respuesta", selected(g))) } })
                 put("comentarios", observaciones.text.toString())
                 put("fotos_anexas", photos.photos.size)
             }
         }
-        val lines = listOf("Brigada: ${brigada.selectedItem}", "Proyecto: ${proyecto.selectedItem}", "Departamento supervisado: ${departamento.selectedItem}", "Supervisa: ${quienSupervisa.text}", "Puesto: ${puesto.selectedItem}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
+        val lines = listOf("Brigada: ${brigada.selectedItem}", "Proyecto: ${proyecto.selectedItem}", "Departamento supervisado: ${departamento.selectedItem}", "Supervisa: ${quienSupervisa.text}", "Puesto: ${puestoFinal()}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
 }

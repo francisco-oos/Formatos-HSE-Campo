@@ -17,7 +17,23 @@ object FormOptions {
         "Sobrestante",
         "Observador",
         "Obrero",
-        "Conductor"
+        "Conductor",
+        "Op. Drone",
+        "Técnico en Mantenimiento",
+        "Ingeniero Electrónico",
+        "Jefe de Departamento",
+        "Oficina"
+    )
+
+    val tiposObservacionTarjeta = listOf(
+        "Acto Inseguro",
+        "Condición Insegura",
+        "Casi Accidente",
+        "Observación de Seguridad Realizada",
+        "Acción Positiva",
+        "Oportunidad de Mejora",
+        "Intervención de Seguridad",
+        "Otro"
     )
 
     val areasDepartamentos = listOf(

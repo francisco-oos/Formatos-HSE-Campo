@@ -1,6 +1,7 @@
 package com.sinopec.formatoshsecampo.features.supervisiondiaria
 
 import android.app.Activity
+import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
@@ -21,6 +22,13 @@ class SupervisionDiariaScreen(private val activity: Activity) {
     private val nombre = Ui.input(activity, "Nombre")
     private val idEmpleado = Ui.input(activity, "ID empleado")
     private val categoria = Ui.spinner(activity, FormOptions.puestos)
+    private val departamentoJefe = Ui.spinner(activity, FormOptions.areasDepartamentos)
+    private val departamentoJefeContainer = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+        visibility = View.GONE
+        addView(Ui.label(activity, "Departamento del jefe"))
+        addView(departamentoJefe)
+    }
     private val volante = Ui.spinner(activity, FormOptions.volantes)
     private val comentarios = Ui.input(activity, "Comentarios", 3)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
@@ -49,6 +57,8 @@ class SupervisionDiariaScreen(private val activity: Activity) {
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
         addView(nombre); addView(idEmpleado)
         addView(Ui.label(activity, "Categoría")); addView(categoria)
+        addView(departamentoJefeContainer)
+        configurarDepartamentoJefe()
         addView(Ui.label(activity, "Volante / cuadrilla")); addView(volante)
         addView(Ui.section(activity, "Checklist"))
         preguntas.forEach { q ->
@@ -65,6 +75,22 @@ class SupervisionDiariaScreen(private val activity: Activity) {
 
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
+
+    private fun configurarDepartamentoJefe() {
+        categoria.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                departamentoJefeContainer.visibility = if (categoria.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun categoriaFinal(): String {
+        val seleccionado = categoria.selectedItem?.toString().orEmpty()
+        return if (seleccionado == "Jefe de Departamento") {
+            "$seleccionado - ${departamentoJefe.selectedItem}"
+        } else seleccionado
+    }
 
     /**
      * Datos de prueba para no llenar manualmente cuando se ajuste el formato.
@@ -93,13 +119,13 @@ class SupervisionDiariaScreen(private val activity: Activity) {
             override val format = HseFormat.SUPERVISION_DIARIA
             override val folio = "SS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
-                put("datos_generales", JSONObject().put("nombre", nombre.text.toString()).put("id_empleado", idEmpleado.text.toString()).put("categoria", categoria.selectedItem.toString()).put("volante", volante.selectedItem.toString()))
+                put("datos_generales", JSONObject().put("nombre", nombre.text.toString()).put("id_empleado", idEmpleado.text.toString()).put("categoria", categoriaFinal()).put("departamento_jefe", departamentoJefe.selectedItem.toString()).put("volante", volante.selectedItem.toString()))
                 put("comentarios", comentarios.text.toString())
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("pregunta", q).put("respuesta", selected(g))) } })
                 put("fotos_anexas", photos.photos.size)
             }
         }
-        val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoria.selectedItem}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text}")
+        val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoriaFinal()}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text}")
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
 }

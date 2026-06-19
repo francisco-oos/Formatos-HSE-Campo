@@ -1,6 +1,7 @@
 package com.sinopec.formatoshsecampo.features.tarjetaobservacion
 
 import android.app.Activity
+import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
@@ -19,15 +20,23 @@ import android.widget.ScrollView
 class TarjetaObservacionScreen(private val activity: Activity) {
     private val area = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val actividad = Ui.input(activity, "Actividad realizada")
-    private val tipo = Ui.spinner(activity, listOf("Acto Inseguro", "Condición Insegura", "Casi Accidente", "Observación de Seguridad Realizada", "Acción Positiva", "Oportunidad de Mejora", "Intervención de Seguridad"))
+    private val tipo = Ui.spinner(activity, FormOptions.tiposObservacionTarjeta)
+    private val tipoOtro = Ui.input(activity, "Especifica el otro tipo de observación")
     private val razon = Ui.input(activity, "Razón de la observación", 3)
     private val detalles = Ui.input(activity, "Detalles de la observación", 3)
     private val acciones = Ui.input(activity, "Acciones tomadas / recomendaciones", 3)
     private val puntoAccion = Ui.spinner(activity, listOf("Sí", "No"))
-    private val asignada = Ui.input(activity, "Acción asignada a")
+    private val asignada = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val nombre = Ui.input(activity, "Nombre de quien reporta")
     private val departamento = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val puesto = Ui.spinner(activity, FormOptions.puestos)
+    private val departamentoJefe = Ui.spinner(activity, FormOptions.areasDepartamentos)
+    private val departamentoJefeContainer = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+        visibility = View.GONE
+        addView(Ui.label(activity, "Departamento del jefe"))
+        addView(departamentoJefe)
+    }
     private val photos = PhotoAttachmentPanel(activity)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
     //CODIGO DEBUG LLENADO DE DATOS
@@ -45,6 +54,8 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         addView(Ui.title(activity, "Tarjeta de Observación de Seguridad"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
         addView(Ui.label(activity, "Tipo de observación")); addView(tipo)
+        addView(tipoOtro.apply { visibility = View.GONE })
+        configurarCampoOtroTipo()
         addView(Ui.label(activity, "Área / Departamento")); addView(area)
         addView(actividad)
         addView(Ui.section(activity, "Acciones de seguridad y observaciones"))
@@ -56,9 +67,11 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         addView(Ui.section(activity, "Reverso"))
         addView(razon); addView(detalles); addView(acciones)
         addView(Ui.label(activity, "Punto de acción generado")); addView(puntoAccion)
-        addView(asignada); addView(nombre)
+        addView(Ui.label(activity, "Acción asignada a")); addView(asignada); addView(nombre)
         addView(Ui.label(activity, "Departamento")); addView(departamento)
         addView(Ui.label(activity, "Puesto de trabajo")); addView(puesto)
+        addView(departamentoJefeContainer)
+        configurarDepartamentoJefe()
         addView(Ui.section(activity, "Fotos anexas")); addView(photos.view)
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
         //CODIGO DEBUG LLENADO DE DATOS
@@ -66,6 +79,37 @@ class TarjetaObservacionScreen(private val activity: Activity) {
             cargarDatosPrueba()
         }
     })
+
+    private fun configurarCampoOtroTipo() {
+        tipo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                tipoOtro.visibility = if (tipo.selectedItem?.toString() == "Otro") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun configurarDepartamentoJefe() {
+        puesto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun tipoObservacionFinal(): String {
+        val seleccionado = tipo.selectedItem?.toString().orEmpty()
+        val otro = tipoOtro.text.toString().trim()
+        return if (seleccionado == "Otro" && otro.isNotBlank()) "Otro: $otro" else seleccionado
+    }
+
+    private fun puestoFinal(): String {
+        val seleccionado = puesto.selectedItem?.toString().orEmpty()
+        return if (seleccionado == "Jefe de Departamento") {
+            "$seleccionado - ${departamentoJefe.selectedItem}"
+        } else seleccionado
+    }
 
     private fun cargarDatosPrueba() {
         area.setSelection(FormOptions.areasDepartamentos.indexOf("Adquisición (Registro)").coerceAtLeast(0))
@@ -77,7 +121,7 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         detalles.setText("La condición puede generar molestias al personal y posible riesgo sanitario.")
         acciones.setText("Solicitar limpieza profunda y fumigación del área.")
         puntoAccion.setSelection(0) // Sí
-        asignada.setText("Administración")
+        asignada.setSelection(FormOptions.areasDepartamentos.indexOf("Logística").coerceAtLeast(0))
 
         nombre.setText("Bartolo García Rueda de León")
         departamento.setSelection(FormOptions.areasDepartamentos.indexOf("Adquisición (Registro)").coerceAtLeast(0))
@@ -97,18 +141,18 @@ class TarjetaObservacionScreen(private val activity: Activity) {
             override val format = HseFormat.TARJETA_OBSERVACION
             override val folio = "TOS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
-                put("datos_generales", JSONObject().put("area_departamento", area.selectedItem.toString()).put("actividad_realizada", actividad.text.toString()).put("tipo_observacion", tipo.selectedItem.toString()))
+                put("datos_generales", JSONObject().put("area_departamento", area.selectedItem.toString()).put("actividad_realizada", actividad.text.toString()).put("tipo_observacion", tipoObservacionFinal()).put("tipo_observacion_otro", tipoOtro.text.toString()))
                 put("observaciones", JSONObject().put("razon", razon.text.toString()).put("detalles", detalles.text.toString()))
-                put("acciones", JSONObject().put("acciones_tomadas_recomendaciones", acciones.text.toString()).put("punto_accion_generado", puntoAccion.selectedItem.toString()).put("accion_asignada_a", asignada.text.toString()))
-                put("reporta", JSONObject().put("nombre", nombre.text.toString()).put("departamento", departamento.selectedItem.toString()).put("puesto_trabajo", puesto.selectedItem.toString()))
+                put("acciones", JSONObject().put("acciones_tomadas_recomendaciones", acciones.text.toString()).put("punto_accion_generado", puntoAccion.selectedItem.toString()).put("accion_asignada_a", asignada.selectedItem.toString()))
+                put("reporta", JSONObject().put("nombre", nombre.text.toString()).put("departamento", departamento.selectedItem.toString()).put("puesto_trabajo", puestoFinal()).put("departamento_jefe", departamentoJefe.selectedItem.toString()))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("punto", q).put("respuesta", selected(g))) } })
                 put("fotos_anexas", photos.photos.size)
             }
         }
         val lines = listOf(
-            "Tipo: ${tipo.selectedItem}", "Área/Departamento: ${area.selectedItem}", "Actividad: ${actividad.text}",
+            "Tipo: ${tipoObservacionFinal()}", "Área/Departamento: ${area.selectedItem}", "Actividad: ${actividad.text}",
             "Razón: ${razon.text}", "Detalles: ${detalles.text}", "Acciones/Recomendaciones: ${acciones.text}",
-            "Punto de acción: ${puntoAccion.selectedItem}", "Asignada a: ${asignada.text}", "Reporta: ${nombre.text} / ${departamento.selectedItem} / ${puesto.selectedItem}"
+            "Punto de acción: ${puntoAccion.selectedItem}", "Asignada a: ${asignada.selectedItem}", "Reporta: ${nombre.text} / ${departamento.selectedItem} / ${puestoFinal()}"
         )
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
