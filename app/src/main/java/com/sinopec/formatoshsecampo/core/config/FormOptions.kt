@@ -1,0 +1,47 @@
+package com.sinopec.formatoshsecampo.core.config
+
+/**
+ * Catálogos controlados para capturas HSE.
+ * Mantener aquí las listas evita datos escritos con variantes diferentes
+ * y facilita ampliar opciones en versiones futuras.
+ */
+object FormOptions {
+    val brigadas = listOf("371")
+
+    val proyectos = listOf("ALACTE")
+
+    val puestos = listOf(
+        "Cabo",
+        "Checador",
+        "Tirador",
+        "Sobrestante",
+        "Observador",
+        "Obrero",
+        "Conductor"
+    )
+
+    val areasDepartamentos = listOf(
+        "Adquisición (Registro)",
+        "Perforación",
+        "Topografía",
+        "Gestoría",
+        "Logística",
+        "Jefatura",
+        "Inmuebles",
+        "QC"
+    )
+
+    val volantes = listOf(
+        "Base",
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10"
+    )
+}

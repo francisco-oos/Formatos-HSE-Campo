@@ -3,11 +3,20 @@ package com.sinopec.formatoshsecampo.ui
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.*
 
 object Ui {
     val red: Int = Color.rgb(181, 30, 46)
+    val lightBorder: Int = Color.rgb(224, 226, 230)
+
+    fun roundedBg(fill: Int, stroke: Int = fill, radius: Float = 12f): GradientDrawable = GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(fill)
+        cornerRadius = radius
+        setStroke(1, stroke)
+    }
 
     fun root(activity: Activity): LinearLayout = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL

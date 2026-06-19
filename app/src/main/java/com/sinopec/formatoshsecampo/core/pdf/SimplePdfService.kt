@@ -45,6 +45,7 @@ class SimplePdfService(private val activity: Activity) {
             HseFormat.SUPERVISION_DIARIA -> addSupervisionSeguraPage(doc, json, report.folio)
             HseFormat.TARJETA_OBSERVACION -> addTarjetaObservacionPages(doc, json, report.folio)
             HseFormat.SUPERVISION_WORD -> addListaChequeoSupervisionPage(doc, json, report.folio)
+            HseFormat.INSPECCION_CHALECO -> addGenericPage(doc, report, visibleLines, json)
         }
 
         addPhotoPages(doc, dir, photos)
@@ -1073,12 +1074,15 @@ class SimplePdfService(private val activity: Activity) {
     // Después se reemplazará por el diseño físico TOS y Lista de Chequeo.
     // -------------------------------------------------------------------------
 
-    private fun addGenericPage(doc: PdfDocument, report: HseReport, visibleLines: List<String>) {
+    private fun addGenericPage(doc: PdfDocument, report: HseReport, visibleLines: List<String>, json: JSONObject) {
         val page = doc.startPage(PdfDocument.PageInfo.Builder(595, 842, 1).create())
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        drawGenericHeader(page.canvas, paint, report)
-        var y = 130f
-        visibleLines.forEach { line ->
+        drawGenericHeader(page.canvas, paint, report, json)
+        var y = 165f
+        visibleLines.filterNot { it.startsWith("Folio:", ignoreCase = true) }
+            .filterNot { it.startsWith("Fecha:", ignoreCase = true) }
+            .filterNot { it.startsWith("Hora:", ignoreCase = true) }
+            .forEach { line ->
             paint.color = Color.BLACK
             paint.typeface = Typeface.DEFAULT
             paint.textSize = 12f
@@ -1091,25 +1095,45 @@ class SimplePdfService(private val activity: Activity) {
         doc.finishPage(page)
     }
 
-    private fun drawGenericHeader(canvas: Canvas, p: Paint, report: HseReport) {
+    private fun drawGenericHeader(canvas: Canvas, p: Paint, report: HseReport, json: JSONObject) {
         canvas.drawColor(Color.WHITE)
+
+        val left = 25f
+        val top = 20f
+        val right = 570f
+        val headerBottom = 105f
+
         p.style = Paint.Style.STROKE
         p.strokeWidth = 1.3f
         p.color = Color.BLACK
-        canvas.drawRect(25f, 20f, 570f, 105f, p)
+        canvas.drawRect(left, top, right, headerBottom, p)
+
         p.style = Paint.Style.FILL
-        p.color = Color.rgb(181, 30, 46)
-        p.typeface = Typeface.DEFAULT_BOLD
-        p.textSize = 22f
-        canvas.drawText("SINOPEC", 42f, 57f, p)
+        val logo = loadLogoBitmap()
+        if (logo != null) {
+            canvas.drawBitmap(logo, null, RectF(40f, 34f, 145f, 72f), Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG))
+        } else {
+            p.color = Color.rgb(181, 30, 46)
+            p.typeface = Typeface.DEFAULT_BOLD
+            p.textSize = 22f
+            canvas.drawText("SINOPEC", 42f, 57f, p)
+        }
+
         p.color = Color.BLACK
+        p.typeface = Typeface.DEFAULT_BOLD
         p.textSize = 19f
         canvas.drawText("Formatos HSE Campo", 210f, 48f, p)
         p.textSize = 13f
         canvas.drawText(report.format.title, 210f, 75f, p)
+        drawQr(canvas, report.folio, 515f, 35f, 45)
+
+        val fecha = json.optString("fecha", "")
+        val hora = json.optString("hora", "")
+        p.typeface = Typeface.DEFAULT
         p.textSize = 10f
         canvas.drawText("Folio: ${report.folio}", 35f, 125f, p)
-        drawQr(canvas, report.folio, 515f, 35f, 45)
+        canvas.drawText("Fecha: $fecha", 35f, 140f, p)
+        canvas.drawText("Hora: $hora", 170f, 140f, p)
     }
 
     // -------------------------------------------------------------------------

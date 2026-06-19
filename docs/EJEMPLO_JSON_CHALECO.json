@@ -1,0 +1,37 @@
+{
+  "formato": "INSPECCION_CHALECO_SALVAVIDAS",
+  "version": "1.0",
+  "folio": "CHAL-20260619-123456",
+  "datos_generales": {
+    "proyecto": "ALACTE",
+    "brigada": "371",
+    "empleado": "Nombre del trabajador",
+    "puesto": "Observador",
+    "supervisor_hse": "Francisco Alvarado"
+  },
+  "partes": [
+    {
+      "id": 1,
+      "parte": "Estado general",
+      "estado": "Correcto",
+      "checklist": ["Limpio", "Sin daños visibles", "No presenta deformaciones"],
+      "observacion": ""
+    },
+    {
+      "id": 5,
+      "parte": "Costuras",
+      "estado": "Requiere reemplazo",
+      "checklist": ["Sin roturas", "Sin hilos sueltos", "Integridad correcta"],
+      "observacion": "Costura abierta en lateral derecho"
+    }
+  ],
+  "resumen": {
+    "revisadas": 8,
+    "correctas": 6,
+    "observaciones": 1,
+    "requiere_reemplazo": 1,
+    "dictamen": "NO APTO PARA USO"
+  },
+  "observaciones_generales": "Retirar chaleco de servicio y reemplazar.",
+  "fotos_anexas": 3
+}

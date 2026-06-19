@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
 import com.sinopec.formatoshsecampo.domain.HseReport
@@ -24,13 +25,13 @@ class SupervisionWordScreen(private val activity: Activity) {
      *
      * Úsalo solo mientras ajustamos el PDF visual.
      */
-    private val DEBUG_LISTA_CHEQUEO = true
+    private val DEBUG_LISTA_CHEQUEO = false
 
-    private val brigada = Ui.input(activity, "Brigada")
-    private val proyecto = Ui.input(activity, "Proyecto")
-    private val departamento = Ui.input(activity, "Departamento supervisado")
+    private val brigada = Ui.spinner(activity, FormOptions.brigadas)
+    private val proyecto = Ui.spinner(activity, FormOptions.proyectos)
+    private val departamento = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val quienSupervisa = Ui.input(activity, "Nombre de quien supervisa")
-    private val puesto = Ui.input(activity, "Puesto que ocupa")
+    private val puesto = Ui.spinner(activity, FormOptions.puestos)
     private val supervisorTrabajo = Ui.input(activity, "Nombre del supervisor del trabajo")
     private val observaciones = Ui.input(activity, "Observaciones", 4)
     private val photos = PhotoAttachmentPanel(activity)
@@ -63,7 +64,12 @@ class SupervisionWordScreen(private val activity: Activity) {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         addView(Ui.title(activity, "Formato Supervisión Segura"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
-        addView(brigada); addView(proyecto); addView(departamento); addView(quienSupervisa); addView(puesto); addView(supervisorTrabajo)
+        addView(Ui.label(activity, "Brigada")); addView(brigada)
+        addView(Ui.label(activity, "Proyecto")); addView(proyecto)
+        addView(Ui.label(activity, "Departamento supervisado")); addView(departamento)
+        addView(quienSupervisa)
+        addView(Ui.label(activity, "Puesto que ocupa")); addView(puesto)
+        addView(supervisorTrabajo)
         addView(Ui.section(activity, "Lista de chequeo"))
         preguntas.forEachIndexed { i, q ->
             addView(Ui.label(activity, "${i + 1}. $q"))
@@ -86,11 +92,11 @@ class SupervisionWordScreen(private val activity: Activity) {
      * Para regresar al modo normal, cambia DEBUG_LISTA_CHEQUEO a false.
      */
     private fun cargarDatosPrueba() {
-        brigada.setText("371")
-        proyecto.setText("ALACTE")
-        departamento.setText("Adquisición de Datos")
+        brigada.setSelection(FormOptions.brigadas.indexOf("371").coerceAtLeast(0))
+        proyecto.setSelection(FormOptions.proyectos.indexOf("ALACTE").coerceAtLeast(0))
+        departamento.setSelection(FormOptions.areasDepartamentos.indexOf("Adquisición (Registro)").coerceAtLeast(0))
         quienSupervisa.setText("Francisco Alvarado")
-        puesto.setText("Sobrestante")
+        puesto.setSelection(FormOptions.puestos.indexOf("Sobrestante").coerceAtLeast(0))
         supervisorTrabajo.setText("Supervisor de campo")
         observaciones.setText("Se revisa condición general del área y cumplimiento de medidas HSE.")
 
@@ -107,13 +113,13 @@ class SupervisionWordScreen(private val activity: Activity) {
             override val format = HseFormat.SUPERVISION_WORD
             override val folio = "FSS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
-                put("datos_generales", JSONObject().put("brigada", brigada.text.toString()).put("proyecto", proyecto.text.toString()).put("departamento_supervisado", departamento.text.toString()).put("quien_supervisa", quienSupervisa.text.toString()).put("puesto", puesto.text.toString()).put("supervisor_trabajo", supervisorTrabajo.text.toString()))
+                put("datos_generales", JSONObject().put("brigada", brigada.selectedItem.toString()).put("proyecto", proyecto.selectedItem.toString()).put("departamento_supervisado", departamento.selectedItem.toString()).put("quien_supervisa", quienSupervisa.text.toString()).put("puesto", puesto.selectedItem.toString()).put("supervisor_trabajo", supervisorTrabajo.text.toString()))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("pregunta", q).put("respuesta", selected(g))) } })
                 put("comentarios", observaciones.text.toString())
                 put("fotos_anexas", photos.photos.size)
             }
         }
-        val lines = listOf("Brigada: ${brigada.text}", "Proyecto: ${proyecto.text}", "Departamento supervisado: ${departamento.text}", "Supervisa: ${quienSupervisa.text}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
+        val lines = listOf("Brigada: ${brigada.selectedItem}", "Proyecto: ${proyecto.selectedItem}", "Departamento supervisado: ${departamento.selectedItem}", "Supervisa: ${quienSupervisa.text}", "Puesto: ${puesto.selectedItem}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
 }

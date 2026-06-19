@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
 import com.sinopec.formatoshsecampo.domain.HseReport
@@ -19,10 +20,17 @@ import android.widget.ScrollView
 class SupervisionDiariaScreen(private val activity: Activity) {
     private val nombre = Ui.input(activity, "Nombre")
     private val idEmpleado = Ui.input(activity, "ID empleado")
-    private val categoria = Ui.spinner(activity, listOf("Cabo", "Checador", "Obrero", "Sobrestante"))
-    private val volante = Ui.spinner(activity, listOf("Base", "Volante 1", "Volante 2", "Volante 3", "Volante 4"))
+    private val categoria = Ui.spinner(activity, FormOptions.puestos)
+    private val volante = Ui.spinner(activity, FormOptions.volantes)
     private val comentarios = Ui.input(activity, "Comentarios", 3)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
+
+    /*
+     * DEBUG_SUPERVISION_DIARIA
+     * true  = carga datos de prueba al abrir el formato.
+     * false = captura normal en campo.
+     */
+    private val DEBUG_SUPERVISION_DIARIA = false
     private val photos = PhotoAttachmentPanel(activity)
 
     private val preguntas = listOf(
@@ -50,8 +58,34 @@ class SupervisionDiariaScreen(private val activity: Activity) {
         }
         addView(Ui.section(activity, "Comentarios y fotos"))
         addView(comentarios); addView(photos.view)
+
+        if (DEBUG_SUPERVISION_DIARIA) {
+            cargarDatosPrueba()
+        }
+
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
+
+    /**
+     * Datos de prueba para no llenar manualmente cuando se ajuste el formato.
+     * Cambia DEBUG_SUPERVISION_DIARIA a true para activarlo.
+     */
+    private fun cargarDatosPrueba() {
+        nombre.setText("Francisco Alvarado")
+        idEmpleado.setText("12345")
+        categoria.setSelection(FormOptions.puestos.indexOf("Sobrestante").coerceAtLeast(0))
+        volante.setSelection(FormOptions.volantes.indexOf("V4").coerceAtLeast(0))
+        comentarios.setText("Se realiza supervisión segura antes del inicio de actividades.")
+
+        checks.forEachIndexed { index, (_, group) ->
+            val childIndex = when {
+                index == 5 -> 2 // CAMBIO para validar salida
+                index == 12 -> 1 // NO para validar salida
+                else -> 0
+            }
+            group.check(group.getChildAt(childIndex).id)
+        }
+    }
 
     private fun generate() {
         if (nombre.text.toString().trim().isBlank()) { Toast.makeText(activity, "Captura el nombre", Toast.LENGTH_SHORT).show(); return }

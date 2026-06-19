@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
 import com.sinopec.formatoshsecampo.domain.HseReport
@@ -16,7 +17,7 @@ import android.widget.ScrollView
 
 /** Captura del formato de dos caras: Tarjeta de Observación de Seguridad. */
 class TarjetaObservacionScreen(private val activity: Activity) {
-    private val area = Ui.input(activity, "Área / Departamento")
+    private val area = Ui.spinner(activity, FormOptions.areasDepartamentos)
     private val actividad = Ui.input(activity, "Actividad realizada")
     private val tipo = Ui.spinner(activity, listOf("Acto Inseguro", "Condición Insegura", "Casi Accidente", "Observación de Seguridad Realizada", "Acción Positiva", "Oportunidad de Mejora", "Intervención de Seguridad"))
     private val razon = Ui.input(activity, "Razón de la observación", 3)
@@ -25,8 +26,8 @@ class TarjetaObservacionScreen(private val activity: Activity) {
     private val puntoAccion = Ui.spinner(activity, listOf("Sí", "No"))
     private val asignada = Ui.input(activity, "Acción asignada a")
     private val nombre = Ui.input(activity, "Nombre de quien reporta")
-    private val departamento = Ui.input(activity, "Departamento")
-    private val puesto = Ui.input(activity, "Puesto de trabajo")
+    private val departamento = Ui.spinner(activity, FormOptions.areasDepartamentos)
+    private val puesto = Ui.spinner(activity, FormOptions.puestos)
     private val photos = PhotoAttachmentPanel(activity)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
     //CODIGO DEBUG LLENADO DE DATOS
@@ -44,7 +45,8 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         addView(Ui.title(activity, "Tarjeta de Observación de Seguridad"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
         addView(Ui.label(activity, "Tipo de observación")); addView(tipo)
-        addView(area); addView(actividad)
+        addView(Ui.label(activity, "Área / Departamento")); addView(area)
+        addView(actividad)
         addView(Ui.section(activity, "Acciones de seguridad y observaciones"))
         checklist.forEach { q ->
             addView(Ui.label(activity, q))
@@ -54,7 +56,9 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         addView(Ui.section(activity, "Reverso"))
         addView(razon); addView(detalles); addView(acciones)
         addView(Ui.label(activity, "Punto de acción generado")); addView(puntoAccion)
-        addView(asignada); addView(nombre); addView(departamento); addView(puesto)
+        addView(asignada); addView(nombre)
+        addView(Ui.label(activity, "Departamento")); addView(departamento)
+        addView(Ui.label(activity, "Puesto de trabajo")); addView(puesto)
         addView(Ui.section(activity, "Fotos anexas")); addView(photos.view)
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
         //CODIGO DEBUG LLENADO DE DATOS
@@ -64,7 +68,7 @@ class TarjetaObservacionScreen(private val activity: Activity) {
     })
 
     private fun cargarDatosPrueba() {
-        area.setText("Adquisición de Datos")
+        area.setSelection(FormOptions.areasDepartamentos.indexOf("Adquisición (Registro)").coerceAtLeast(0))
         actividad.setText("Inspección en comedor")
 
         tipo.setSelection(0) // 0 Acto Inseguro, 5 Oportunidad de Mejora
@@ -76,8 +80,8 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         asignada.setText("Administración")
 
         nombre.setText("Bartolo García Rueda de León")
-        departamento.setText("Adquisición de Datos")
-        puesto.setText("Sobrestante")
+        departamento.setSelection(FormOptions.areasDepartamentos.indexOf("Adquisición (Registro)").coerceAtLeast(0))
+        puesto.setSelection(FormOptions.puestos.indexOf("Sobrestante").coerceAtLeast(0))
 
         checks.forEachIndexed { index, (_, group) ->
             when (index % 3) {
@@ -93,18 +97,18 @@ class TarjetaObservacionScreen(private val activity: Activity) {
             override val format = HseFormat.TARJETA_OBSERVACION
             override val folio = "TOS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
-                put("datos_generales", JSONObject().put("area_departamento", area.text.toString()).put("actividad_realizada", actividad.text.toString()).put("tipo_observacion", tipo.selectedItem.toString()))
+                put("datos_generales", JSONObject().put("area_departamento", area.selectedItem.toString()).put("actividad_realizada", actividad.text.toString()).put("tipo_observacion", tipo.selectedItem.toString()))
                 put("observaciones", JSONObject().put("razon", razon.text.toString()).put("detalles", detalles.text.toString()))
                 put("acciones", JSONObject().put("acciones_tomadas_recomendaciones", acciones.text.toString()).put("punto_accion_generado", puntoAccion.selectedItem.toString()).put("accion_asignada_a", asignada.text.toString()))
-                put("reporta", JSONObject().put("nombre", nombre.text.toString()).put("departamento", departamento.text.toString()).put("puesto_trabajo", puesto.text.toString()))
+                put("reporta", JSONObject().put("nombre", nombre.text.toString()).put("departamento", departamento.selectedItem.toString()).put("puesto_trabajo", puesto.selectedItem.toString()))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("punto", q).put("respuesta", selected(g))) } })
                 put("fotos_anexas", photos.photos.size)
             }
         }
         val lines = listOf(
-            "Tipo: ${tipo.selectedItem}", "Área/Departamento: ${area.text}", "Actividad: ${actividad.text}",
+            "Tipo: ${tipo.selectedItem}", "Área/Departamento: ${area.selectedItem}", "Actividad: ${actividad.text}",
             "Razón: ${razon.text}", "Detalles: ${detalles.text}", "Acciones/Recomendaciones: ${acciones.text}",
-            "Punto de acción: ${puntoAccion.selectedItem}", "Asignada a: ${asignada.text}", "Reporta: ${nombre.text} / ${departamento.text} / ${puesto.text}"
+            "Punto de acción: ${puntoAccion.selectedItem}", "Asignada a: ${asignada.text}", "Reporta: ${nombre.text} / ${departamento.selectedItem} / ${puesto.selectedItem}"
         )
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
