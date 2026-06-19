@@ -16,6 +16,16 @@ import android.widget.ScrollView
 
 /** Formato basado en el Word: Lista de Chequeo Supervisión Segura SSM-HSE-F-20. */
 class SupervisionWordScreen(private val activity: Activity) {
+    /*
+     * MODO PRUEBAS DEL FORMATO LISTA DE CHEQUEO.
+     *
+     * true  = al entrar al formato se cargan datos de prueba automáticamente.
+     * false = modo normal para capturar datos reales en campo.
+     *
+     * Úsalo solo mientras ajustamos el PDF visual.
+     */
+    private val DEBUG_LISTA_CHEQUEO = true
+
     private val brigada = Ui.input(activity, "Brigada")
     private val proyecto = Ui.input(activity, "Proyecto")
     private val departamento = Ui.input(activity, "Departamento supervisado")
@@ -62,8 +72,35 @@ class SupervisionWordScreen(private val activity: Activity) {
         }
         addView(Ui.section(activity, "Observaciones y fotos"))
         addView(observaciones); addView(photos.view)
+
+        if (DEBUG_LISTA_CHEQUEO) {
+            cargarDatosPrueba()
+        }
+
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
+
+
+    /**
+     * Carga datos de prueba para generar el PDF sin llenar el formulario a mano.
+     * Para regresar al modo normal, cambia DEBUG_LISTA_CHEQUEO a false.
+     */
+    private fun cargarDatosPrueba() {
+        brigada.setText("371")
+        proyecto.setText("ALACTE")
+        departamento.setText("Adquisición de Datos")
+        quienSupervisa.setText("Francisco Alvarado")
+        puesto.setText("Sobrestante")
+        supervisorTrabajo.setText("Supervisor de campo")
+        observaciones.setText("Se revisa condición general del área y cumplimiento de medidas HSE.")
+
+        checks.forEachIndexed { index, (_, group) ->
+            // Patrón de prueba: casi todo SI y algunos NO para validar alineación.
+            val respuestaNo = index == 1 || index == 9
+            val childIndex = if (respuestaNo) 1 else 0
+            group.check(group.getChildAt(childIndex).id)
+        }
+    }
 
     private fun generate() {
         val report = object : HseReport {

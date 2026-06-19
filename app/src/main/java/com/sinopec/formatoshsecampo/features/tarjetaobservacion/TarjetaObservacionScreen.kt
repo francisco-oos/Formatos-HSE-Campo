@@ -29,6 +29,8 @@ class TarjetaObservacionScreen(private val activity: Activity) {
     private val puesto = Ui.input(activity, "Puesto de trabajo")
     private val photos = PhotoAttachmentPanel(activity)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
+    //CODIGO DEBUG LLENADO DE DATOS
+    private val DEBUG_TOS = false
 
     private val checklist = listOf(
         "Conducta Personal", "Uso del EPP", "Ojos en la Tarea", "Posición de trabajo segura", "Alzando/jalando/empujando/cargando",
@@ -55,9 +57,38 @@ class TarjetaObservacionScreen(private val activity: Activity) {
         addView(asignada); addView(nombre); addView(departamento); addView(puesto)
         addView(Ui.section(activity, "Fotos anexas")); addView(photos.view)
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
+        //CODIGO DEBUG LLENADO DE DATOS
+        if (DEBUG_TOS) {
+            cargarDatosPrueba()
+        }
     })
 
+    private fun cargarDatosPrueba() {
+        area.setText("Adquisición de Datos")
+        actividad.setText("Inspección en comedor")
+
+        tipo.setSelection(0) // 0 Acto Inseguro, 5 Oportunidad de Mejora
+
+        razon.setText("Se observa presencia de moscas en el área del comedor.")
+        detalles.setText("La condición puede generar molestias al personal y posible riesgo sanitario.")
+        acciones.setText("Solicitar limpieza profunda y fumigación del área.")
+        puntoAccion.setSelection(0) // Sí
+        asignada.setText("Administración")
+
+        nombre.setText("Bartolo García Rueda de León")
+        departamento.setText("Adquisición de Datos")
+        puesto.setText("Sobrestante")
+
+        checks.forEachIndexed { index, (_, group) ->
+            when (index % 3) {
+                0 -> group.check(group.getChildAt(0).id) // Seguro
+                1 -> group.check(group.getChildAt(1).id) // Inseguro
+                2 -> group.check(group.getChildAt(2).id) // No Aplica
+            }
+        }
+    }
     private fun generate() {
+
         val report = object : HseReport {
             override val format = HseFormat.TARJETA_OBSERVACION
             override val folio = "TOS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
