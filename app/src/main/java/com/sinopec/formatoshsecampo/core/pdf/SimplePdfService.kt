@@ -865,7 +865,7 @@ class SimplePdfService(private val activity: Activity) {
         canvas.drawText(general.optString("puesto").take(24), 365f, 177f, p)
 
         p.textSize = 10.2f
-        canvas.drawText(general.optString("supervisor_trabajo").take(30), 205f, 218f, p)
+        canvas.drawText(fitText(general.optString("supervisor_trabajo"), p, 170f),205f,218f,p)
         canvas.drawText(fechaHoraVisible(json).take(26), 395f, 218f, p)
 
         // -----------------------------------------------------------------
@@ -1212,5 +1212,20 @@ class SimplePdfService(private val activity: Activity) {
             .digest(text.toByteArray(Charsets.UTF_8))
             .joinToString("") { "%02X".format(it) }
             .take(8)
+    }
+    private fun fitText(text: String, paint: Paint, maxWidth: Float): String {
+        val clean = text.trim()
+
+        if (paint.measureText(clean) <= maxWidth) {
+            return clean
+        }
+
+        var result = clean
+
+        while (result.isNotEmpty() && paint.measureText("$result...") > maxWidth) {
+            result = result.dropLast(1)
+        }
+
+        return "$result..."
     }
 }
