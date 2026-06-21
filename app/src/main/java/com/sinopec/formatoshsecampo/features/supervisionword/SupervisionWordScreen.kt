@@ -5,6 +5,9 @@ import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.debug.DebugConfig
+import com.sinopec.formatoshsecampo.core.profile.UserProfile
+import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
 import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
@@ -12,6 +15,7 @@ import com.sinopec.formatoshsecampo.domain.HseReport
 import com.sinopec.formatoshsecampo.features.home.HomeScreen
 import com.sinopec.formatoshsecampo.features.supervisiondiaria.*
 import com.sinopec.formatoshsecampo.ui.Ui
+import com.sinopec.formatoshsecampo.ui.SignaturePadView
 import org.json.JSONArray
 import org.json.JSONObject
 import android.widget.ScrollView
@@ -26,7 +30,7 @@ class SupervisionWordScreen(private val activity: Activity) {
      *
      * Úsalo solo mientras ajustamos el PDF visual.
      */
-    private val DEBUG_LISTA_CHEQUEO = false
+    private val DEBUG_LISTA_CHEQUEO = DebugConfig.LISTA_CHEQUEO_SUPERVISION
 
     private val brigada = Ui.spinner(activity, FormOptions.brigadas)
     private val proyecto = Ui.spinner(activity, FormOptions.proyectos)
@@ -42,6 +46,8 @@ class SupervisionWordScreen(private val activity: Activity) {
     }
     private val supervisorTrabajo = Ui.input(activity, "Nombre del supervisor del trabajo")
     private val observaciones = Ui.input(activity, "Observaciones", 4)
+    private val firmaSupervisorTrabajo = SignaturePadView(activity)
+    private val firmaQuienSupervisa = SignaturePadView(activity)
     private val photos = PhotoAttachmentPanel(activity)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
 
@@ -72,6 +78,8 @@ class SupervisionWordScreen(private val activity: Activity) {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         addView(Ui.title(activity, "Formato Supervisión Segura"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
+        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        cargarUltimoPerfil()
         addView(Ui.label(activity, "Brigada")); addView(brigada)
         addView(Ui.label(activity, "Proyecto")); addView(proyecto)
         addView(Ui.label(activity, "Departamento supervisado")); addView(departamento)
@@ -86,8 +94,17 @@ class SupervisionWordScreen(private val activity: Activity) {
             val group = Ui.radioRow(activity, listOf("SI", "NO"), 0)
             checks.add(q to group); addView(group)
         }
-        addView(Ui.section(activity, "Observaciones y fotos"))
-        addView(observaciones); addView(photos.view)
+        addView(Ui.section(activity, "Observaciones"))
+        addView(observaciones)
+        addView(Ui.section(activity, "Firmas"))
+        addView(Ui.label(activity, "Firma del supervisor del trabajo"))
+        addView(firmaSupervisorTrabajo)
+        addView(Ui.button(activity, "Limpiar firma supervisor", { firmaSupervisorTrabajo.clear() }))
+        addView(Ui.label(activity, "Firma de quien realizó la supervisión"))
+        addView(firmaQuienSupervisa)
+        addView(Ui.button(activity, "Limpiar firma de quien supervisa", { firmaQuienSupervisa.clear() }))
+        addView(Ui.section(activity, "Fotos anexas"))
+        addView(photos.view)
 
         if (DEBUG_LISTA_CHEQUEO) {
             cargarDatosPrueba()
@@ -124,7 +141,7 @@ class SupervisionWordScreen(private val activity: Activity) {
         quienSupervisa.setText("Francisco Alvarado")
         puesto.setSelection(FormOptions.puestos.indexOf("Sobrestante").coerceAtLeast(0))
         supervisorTrabajo.setText("Supervisor de campo")
-        observaciones.setText("Se revisa condición general del área y cumplimiento de medidas HSE.")
+        //observaciones.setText("Se revisa condición general del área y cumplimiento de medidas HSE.")
 
         checks.forEachIndexed { index, (_, group) ->
             // Patrón de prueba: casi todo SI y algunos NO para validar alineación.
@@ -142,10 +159,54 @@ class SupervisionWordScreen(private val activity: Activity) {
                 put("datos_generales", JSONObject().put("brigada", brigada.selectedItem.toString()).put("proyecto", proyecto.selectedItem.toString()).put("departamento_supervisado", departamento.selectedItem.toString()).put("quien_supervisa", quienSupervisa.text.toString()).put("puesto", puestoFinal()).put("departamento_jefe", departamentoJefe.selectedItem.toString()).put("supervisor_trabajo", supervisorTrabajo.text.toString()))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("pregunta", q).put("respuesta", selected(g))) } })
                 put("comentarios", observaciones.text.toString())
+                put("firmas", JSONObject()
+                    .put("supervisor_trabajo_png_b64", firmaSupervisorTrabajo.toPngBase64())
+                    .put("quien_supervisa_png_b64", firmaQuienSupervisa.toPngBase64())
+                    .put("supervisor_trabajo_presente", firmaSupervisorTrabajo.hasSignature)
+                    .put("quien_supervisa_presente", firmaQuienSupervisa.hasSignature)
+                )
                 put("fotos_anexas", photos.photos.size)
             }
         }
         val lines = listOf("Brigada: ${brigada.selectedItem}", "Proyecto: ${proyecto.selectedItem}", "Departamento supervisado: ${departamento.selectedItem}", "Supervisa: ${quienSupervisa.text}", "Puesto: ${puestoFinal()}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
+        guardarPerfilActual()
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
+    }
+
+    private fun cargarUltimoPerfil() {
+        UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
+    }
+
+    private fun seleccionarPerfil() {
+        UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
+            quienSupervisa.setText("")
+            supervisorTrabajo.setText("")
+        })
+    }
+
+    private fun aplicarPerfil(profile: UserProfile) {
+        setSpinner(brigada, FormOptions.brigadas, profile.brigada)
+        setSpinner(proyecto, FormOptions.proyectos, profile.proyecto)
+        setSpinner(departamento, FormOptions.areasDepartamentos, profile.areaDepartamento)
+        quienSupervisa.setText(profile.nombre)
+        setSpinner(puesto, FormOptions.puestos, profile.puesto)
+        setSpinner(departamentoJefe, FormOptions.areasDepartamentos, profile.departamentoJefe)
+        departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+    }
+
+    private fun guardarPerfilActual() {
+        UserProfileStore.save(activity, UserProfile(
+            nombre = quienSupervisa.text.toString().trim(),
+            puesto = puesto.selectedItem?.toString().orEmpty(),
+            departamentoJefe = departamentoJefe.selectedItem?.toString().orEmpty(),
+            areaDepartamento = departamento.selectedItem?.toString().orEmpty(),
+            brigada = brigada.selectedItem?.toString().orEmpty(),
+            proyecto = proyecto.selectedItem?.toString().orEmpty()
+        ))
+    }
+
+    private fun setSpinner(spinner: Spinner, items: List<String>, value: String) {
+        val idx = items.indexOfFirst { it.equals(value, ignoreCase = true) }
+        if (idx >= 0) spinner.setSelection(idx)
     }
 }

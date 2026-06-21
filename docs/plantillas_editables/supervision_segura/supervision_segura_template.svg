@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="595"
+   height="842"
+   viewBox="0 0 595 842"
+   version="1.1"
+   id="svg81"
+   sodipodi:docname="supervision_segura_template.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   inkscape:export-filename="C:\Users\FranciscoAley\Documents\dev-jose\Formatos-HSE-Campo\app\src\main\res\drawable\supervision_segura_template.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs81" />
+  <sodipodi:namedview
+     id="namedview81"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.1947743"
+     inkscape:cx="326.83997"
+     inkscape:cy="243.97913"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="1912"
+     inkscape:window-y="216"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="diseno_base" />
+  <title
+     id="title1">Supervisión Segura - Plantilla editable</title>
+  <desc
+     id="desc1">Plantilla SVG editable para Formatos HSE Campo. Las respuestas se escriben desde Android; no contiene JSON ni datos cifrados.</desc>
+  <rect
+     width="100%"
+     height="100%"
+     fill="white"
+     id="rect1" />
+  <g
+     id="diseno_base">
+    <rect
+       x="35"
+       y="18"
+       width="525"
+       height="804"
+       fill="none"
+       stroke="black"
+       stroke-width="1.4"
+       id="rect2" />
+    <rect
+       x="35"
+       y="18"
+       width="525"
+       height="100"
+       fill="none"
+       stroke="black"
+       stroke-width="1.4"
+       id="rect3" />
+    <line
+       x1="190"
+       y1="18"
+       x2="190"
+       y2="118"
+       stroke="black"
+       stroke-width="1.4"
+       id="line3" />
+    <line
+       x1="395"
+       y1="18"
+       x2="395"
+       y2="90"
+       stroke="black"
+       stroke-width="1.4"
+       id="line4" />
+    <line
+       x1="395"
+       y1="54"
+       x2="560"
+       y2="54"
+       stroke="black"
+       stroke-width="1.4"
+       id="line5" />
+    <line
+       x1="190"
+       y1="90"
+       x2="560"
+       y2="90"
+       stroke="black"
+       stroke-width="1.4"
+       id="line6" />
+    <image
+       href="data:image/png;base64,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"
+       x="37.141155"
+       y="21.119284"
+       width="150.7177"
+       height="92.685883"
+       preserveAspectRatio="xMidYMid"
+       id="image6"
+       inkscape:label="logo" />
+    <text
+       x="292.5"
+       y="43.586479"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="21px"
+       font-weight="bold"
+       fill="#000000"
+       text-anchor="middle"
+       id="text6"
+       inkscape:label="titulo"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="292.5"
+         y="43.586479">Check</tspan><tspan
+         sodipodi:role="line"
+         id="tspan2"
+         x="292.5"
+         y="69.836479">Supervisión Segura</tspan></text>
+    <text
+       x="403"
+       y="35"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.5"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text7"
+       inkscape:label="fecha">FECHA:</text>
+    <text
+       x="403"
+       y="71"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.5"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text8">VOLANTE:</text>
+    <text
+       x="198"
+       y="102"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.2px"
+       font-weight="bold"
+       fill="#000000"
+       text-anchor="start"
+       id="text9"
+       inkscape:label="categoria">CATEGORIA:</text>
+    <text
+       x="198"
+       y="117"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.2"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text10"
+       inkscape:label="nombre">NOMBRE:</text>
+    <text
+       x="403"
+       y="106"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.2"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text11"
+       inkscape:label="id">ID:</text>
+    <rect
+       x="35"
+       y="118"
+       width="525"
+       height="22"
+       fill="#E10000"
+       stroke="black"
+       stroke-width="1.2"
+       id="rect11" />
+    <text
+       x="297.5"
+       y="134"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="13"
+       font-weight="bold"
+       fill="white"
+       text-anchor="middle"
+       id="text12"
+       inkscape:label="personal">PERSONAL</text>
+    <text
+       x="426"
+       y="153"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text13">SI</text>
+    <text
+       x="465"
+       y="153"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text14">NO</text>
+    <text
+       x="499"
+       y="153"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text15">CAMBIO</text>
+    <text
+       x="42"
+       y="175.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text16">¿HOY ME ENCUENTRO BIEN?</text>
+    <rect
+       x="412"
+       y="160"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect16" />
+    <rect
+       x="455"
+       y="160"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect17" />
+    <rect
+       x="498"
+       y="160"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect18" />
+    <text
+       x="42"
+       y="198.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text18">¿TENGO CASCO?</text>
+    <rect
+       x="412"
+       y="183"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect19" />
+    <rect
+       x="455"
+       y="183"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect20" />
+    <rect
+       x="498"
+       y="183"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect21" />
+    <text
+       x="42"
+       y="221.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text21">¿MI OVEROL ESTA EN BUEN ESTADO?</text>
+    <rect
+       x="412"
+       y="206"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect22" />
+    <rect
+       x="455"
+       y="206"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect23" />
+    <rect
+       x="498"
+       y="206"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect24" />
+    <text
+       x="42"
+       y="244.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text24">¿MIS BOTAS ESTAN EN BUEN ESTADO?</text>
+    <rect
+       x="412"
+       y="229"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect25" />
+    <rect
+       x="455"
+       y="229"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect26" />
+    <rect
+       x="498"
+       y="229"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect27" />
+    <text
+       x="42"
+       y="267.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text27">¿MIS POLAINAS ESTAN EN BUEN ESTADO?</text>
+    <rect
+       x="412"
+       y="252"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect28" />
+    <rect
+       x="455"
+       y="252"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect29" />
+    <rect
+       x="498"
+       y="252"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect30" />
+    <text
+       x="42"
+       y="290.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text30">¿MI CHALECO ESTA EN BUEN ESTADO?</text>
+    <rect
+       x="412"
+       y="275"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect31" />
+    <rect
+       x="455"
+       y="275"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect32" />
+    <rect
+       x="498"
+       y="275"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect33" />
+    <text
+       x="42"
+       y="313.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text33">¿CUENTO CON GUANTES?</text>
+    <rect
+       x="412"
+       y="298"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect34" />
+    <rect
+       x="455"
+       y="298"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect35" />
+    <rect
+       x="498"
+       y="298"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect36" />
+    <text
+       x="42"
+       y="336.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text36">¿CUENTO CON LENTES?</text>
+    <rect
+       x="412"
+       y="321"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect37" />
+    <rect
+       x="455"
+       y="321"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect38" />
+    <rect
+       x="498"
+       y="321"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect39" />
+    <text
+       x="42"
+       y="359.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text39">¿CUENTO CON BARBIQUEJO?</text>
+    <rect
+       x="412"
+       y="344"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect40" />
+    <rect
+       x="455"
+       y="344"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect41" />
+    <rect
+       x="498"
+       y="344"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect42" />
+    <text
+       x="42"
+       y="382.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text42">¿MIS COMPAÑEROS SE ENCUENTRAN BIEN?</text>
+    <rect
+       x="412"
+       y="367"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect43" />
+    <rect
+       x="455"
+       y="367"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect44" />
+    <rect
+       x="498"
+       y="367"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect45" />
+    <text
+       x="42"
+       y="405.5"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.8"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text45">¿YO ESTOY LISTO PARA IR A TRABAJAR?</text>
+    <rect
+       x="412"
+       y="390"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect46" />
+    <rect
+       x="455"
+       y="390"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect47" />
+    <rect
+       x="498"
+       y="390"
+       width="43"
+       height="23"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect48" />
+    <rect
+       x="35"
+       y="421"
+       width="525"
+       height="22"
+       fill="#E10000"
+       stroke="black"
+       stroke-width="1.2"
+       id="rect49" />
+    <text
+       x="297.5"
+       y="437"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="13"
+       font-weight="bold"
+       fill="white"
+       text-anchor="middle"
+       id="text49">EQUIPOS Y HERRAMIENTAS</text>
+    <text
+       x="426"
+       y="456"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text50">SI</text>
+    <text
+       x="465"
+       y="456"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text51">NO</text>
+    <text
+       x="499"
+       y="456"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text52">CAMBIO</text>
+    <text
+       x="42"
+       y="476"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="black"
+       id="text53"><tspan
+         x="42"
+         dy="0"
+         id="tspan52">¿RECIBI MI EQUIPO Y HERRAMIENTA</tspan><tspan
+         x="42"
+         dy="12"
+         id="tspan53">EN BUEN ESTADO?</tspan></text>
+    <rect
+       x="412"
+       y="463"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect53" />
+    <rect
+       x="455"
+       y="463"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect54" />
+    <rect
+       x="498"
+       y="463"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect55" />
+    <text
+       x="42"
+       y="517"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="black"
+       id="text56"><tspan
+         x="42"
+         dy="0"
+         id="tspan55">¿TENGO IDENTIFICADOS LOS RIESGOS A LOS QUE</tspan><tspan
+         x="42"
+         dy="12"
+         id="tspan56">ESTOY EXPUESTO?</tspan></text>
+    <rect
+       x="412"
+       y="504"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect56" />
+    <rect
+       x="455"
+       y="504"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect57" />
+    <rect
+       x="498"
+       y="504"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect58" />
+    <text
+       x="42"
+       y="558"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="black"
+       id="text58"><tspan
+         x="42"
+         dy="0"
+         id="tspan58">¿SE QUE HACER EN CASO DE UNA EMERGENCIA?</tspan></text>
+    <rect
+       x="412"
+       y="545"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect59" />
+    <rect
+       x="455"
+       y="545"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect60" />
+    <rect
+       x="498"
+       y="545"
+       width="43"
+       height="41"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect61" />
+    <rect
+       x="35"
+       y="594"
+       width="525"
+       height="22"
+       fill="#E10000"
+       stroke="black"
+       stroke-width="1.2"
+       id="rect62" />
+    <text
+       x="297.5"
+       y="610"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="13"
+       font-weight="bold"
+       fill="white"
+       text-anchor="middle"
+       id="text62">TRABAJOS A REALIZAR</text>
+    <text
+       x="426"
+       y="629"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text63">SI</text>
+    <text
+       x="465"
+       y="629"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text64">NO</text>
+    <text
+       x="499"
+       y="629"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="9.4"
+       font-weight="bold"
+       fill="black"
+       text-anchor="start"
+       id="text65">CAMBIO</text>
+    <text
+       x="42"
+       y="649"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="black"
+       id="text66"><tspan
+         x="42"
+         dy="0"
+         id="tspan65">¿SE PLANEARON LAS ACTIVIDADES CON LA</tspan><tspan
+         x="42"
+         dy="12"
+         id="tspan66">IDENTIFICACION DE RIESGOS?</tspan></text>
+    <rect
+       x="412"
+       y="636"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect66" />
+    <rect
+       x="455"
+       y="636"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect67" />
+    <rect
+       x="498"
+       y="636"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect68" />
+    <text
+       x="42"
+       y="688"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="black"
+       id="text69"><tspan
+         x="42"
+         dy="0"
+         id="tspan68">¿SE TIENEN LOS PROCEDIMIENTOS O</tspan><tspan
+         x="42"
+         dy="12"
+         id="tspan69">INSTRUCTIVOS DE TRABAJO?</tspan></text>
+    <rect
+       x="412"
+       y="675"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect69" />
+    <rect
+       x="455"
+       y="675"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect70" />
+    <rect
+       x="498"
+       y="675"
+       width="43"
+       height="39"
+       fill="none"
+       stroke="black"
+       stroke-width="1.1"
+       id="rect71" />
+    <rect
+       x="35"
+       y="721"
+       width="525"
+       height="42"
+       fill="#E10000"
+       stroke="black"
+       stroke-width="1.2"
+       id="rect72" />
+    <text
+       x="297.5"
+       y="738"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="12.7"
+       font-weight="bold"
+       fill="white"
+       text-anchor="middle"
+       id="text72">PRIMERO QUE TODO TU SEGURIDAD LLEVA AGUA Y SUERO PARA</text>
+    <text
+       x="297.5"
+       y="755"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="12.7"
+       font-weight="bold"
+       fill="white"
+       text-anchor="middle"
+       id="text73">MANTENERTE HIDRATADO</text>
+    <rect
+       x="35"
+       y="763"
+       width="525"
+       height="59"
+       fill="none"
+       stroke="black"
+       stroke-width="1.2"
+       id="rect73" />
+    <text
+       x="42"
+       y="777"
+       font-family="Arial, Helvetica, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="black"
+       text-anchor="start"
+       id="text74">COMENTARIOS</text>
+    <line
+       x1="40"
+       y1="793"
+       x2="555"
+       y2="793"
+       stroke="#D2D2D2"
+       stroke-width="0.45"
+       id="line74" />
+    <line
+       x1="40"
+       y1="811"
+       x2="555"
+       y2="811"
+       stroke="#D2D2D2"
+       stroke-width="0.45"
+       id="line75" />
+  </g>
+  <g
+     id="campos_dinamicos_guia"
+     opacity="0.22"
+     style="display:none">
+    <text
+       x="465"
+       y="35"
+       font-family="Arial"
+       font-size="10"
+       fill="#2337A5"
+       id="text75">{{fecha_hora}}</text>
+    <text
+       x="470"
+       y="71"
+       font-family="Arial"
+       font-size="10"
+       fill="#2337A5"
+       id="text76">{{volante}}</text>
+    <text
+       x="280"
+       y="106"
+       font-family="Arial"
+       font-size="9"
+       fill="#2337A5"
+       id="text77">{{categoria}}</text>
+    <text
+       x="265"
+       y="117"
+       font-family="Arial"
+       font-size="9"
+       fill="#2337A5"
+       id="text78">{{nombre}}</text>
+    <text
+       x="430"
+       y="106"
+       font-family="Arial"
+       font-size="9"
+       fill="#2337A5"
+       id="text79">{{id}}</text>
+    <text
+       x="45"
+       y="790"
+       font-family="Arial"
+       font-size="10"
+       fill="#2337A5"
+       id="text80">{{comentarios}}</text>
+    <text
+       x="510"
+       y="782"
+       font-family="Arial"
+       font-size="7"
+       fill="#2337A5"
+       id="text81">{{qr}}</text>
+  </g>
+</svg>

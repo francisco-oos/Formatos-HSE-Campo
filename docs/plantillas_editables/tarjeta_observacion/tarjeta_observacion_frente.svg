@@ -1,0 +1,1085 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="595"
+   height="842"
+   viewBox="0 0 595 842"
+   version="1.1"
+   id="svg83"
+   sodipodi:docname="tarjeta_observacion_frente.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   inkscape:export-filename="tarjeta_observacion_frente_preview.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs83" />
+  <sodipodi:namedview
+     id="namedview83"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.1947743"
+     inkscape:cx="295.0348"
+     inkscape:cy="39.756463"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="campos_dinamicos" />
+  <title
+     id="title1">Tarjeta de Observación de Seguridad - Frente</title>
+  <desc
+     id="desc1">Plantilla editable. No contiene JSON ni datos cifrados.</desc>
+  <rect
+     width="595"
+     height="842"
+     fill="white"
+     id="rect1" />
+  <g
+     id="diseno_base"
+     inkscape:label="Diseño base">
+    <rect
+       x="58"
+       y="32"
+       width="479"
+       height="108"
+       fill="none"
+       stroke="#000"
+       stroke-width="1.2"
+       id="rect2" />
+    <line
+       x1="223"
+       y1="32"
+       x2="223"
+       y2="104.00994"
+       stroke="#000000"
+       stroke-width="1"
+       id="line2" />
+    <line
+       x1="407"
+       y1="32"
+       x2="407"
+       y2="104"
+       stroke="#000"
+       stroke-width="1"
+       id="line3" />
+    <line
+       x1="407"
+       y1="62"
+       x2="537"
+       y2="62"
+       stroke="#000"
+       stroke-width="1"
+       id="line4" />
+    <line
+       x1="58"
+       y1="104"
+       x2="537"
+       y2="104"
+       stroke="#000"
+       stroke-width="1"
+       id="line6" />
+    <image
+       href="data:image/png;base64,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"
+       x="59.304176"
+       y="34.141151"
+       width="160.90259"
+       height="66.880714"
+       preserveAspectRatio="xMidYMid"
+       id="image6" />
+    <text
+       x="315.0"
+       y="60"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text6">Sistema de</text>
+    <text
+       x="315.0"
+       y="87"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text7">Gestión de HSE</text>
+    <text
+       x="297.5"
+       y="124"
+       font-family="Arial, sans-serif"
+       font-size="14.2"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text8">TARJETA DE OBSERVACIÓN DE SEGURIDAD</text>
+    <text
+       x="415"
+       y="52"
+       font-family="Arial, sans-serif"
+       font-size="9.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text9">Revisión: 02</text>
+    <text
+       x="414.16302"
+       y="84.510933"
+       font-family="Arial, sans-serif"
+       font-size="9.5px"
+       font-weight="normal"
+       fill="#000000"
+       text-anchor="start"
+       id="text10"
+       dx="0"
+       style="font-size:13.3333px">Fecha:30/05/23</text>
+    <text
+       x="58"
+       y="153"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text11">Fecha:</text>
+    <line
+       x1="103"
+       y1="157"
+       x2="228"
+       y2="157"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line11" />
+    <text
+       x="367"
+       y="153"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text12">Hora:</text>
+    <line
+       x1="419"
+       y1="157"
+       x2="529"
+       y2="157"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line12" />
+    <rect
+       x="59.673958"
+       y="161.79324"
+       width="479"
+       height="18"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect12" />
+    <text
+       x="299.17395"
+       y="175.79324"
+       font-family="Arial, sans-serif"
+       font-size="14px"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       id="text13">TIPO DE OBSERVACIÓN</text>
+    <rect
+       x="64"
+       y="184"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect13" />
+    <text
+       x="86"
+       y="196"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text14">Acto Inseguro</text>
+    <rect
+       x="64"
+       y="203"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect14" />
+    <text
+       x="86"
+       y="215"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text15">Condición Insegura</text>
+    <rect
+       x="64"
+       y="222"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect15" />
+    <text
+       x="86"
+       y="234"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text16">Casi Accidente</text>
+    <rect
+       x="64"
+       y="241"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect16" />
+    <text
+       x="86"
+       y="253"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text17">Observación de Seguridad Realizada</text>
+    <rect
+       x="64"
+       y="260"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect17" />
+    <text
+       x="86"
+       y="272"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text18">Otro</text>
+    <rect
+       x="315"
+       y="184"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect18" />
+    <text
+       x="337"
+       y="196"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text19">Acción Positiva</text>
+    <rect
+       x="315"
+       y="203"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect19" />
+    <text
+       x="337"
+       y="215"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text20">Oportunidad de Mejora</text>
+    <rect
+       x="315"
+       y="222"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect20" />
+    <text
+       x="337"
+       y="234"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text21">Intervención de Seguridad</text>
+    <text
+       x="58"
+       y="286"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text22">Otro motivo:</text>
+    <line
+       x1="141"
+       y1="289"
+       x2="537"
+       y2="289"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line22" />
+    <text
+       x="58"
+       y="309"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text23">Área/Departamento:</text>
+    <line
+       x1="186"
+       y1="312"
+       x2="537"
+       y2="312"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line23" />
+    <text
+       x="58"
+       y="333"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text24">Actividad realizada:</text>
+    <line
+       x1="186"
+       y1="336"
+       x2="537"
+       y2="336"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line24" />
+    <rect
+       x="58"
+       y="348"
+       width="479"
+       height="18"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect24" />
+    <text
+       x="297.5"
+       y="362"
+       font-family="Arial, sans-serif"
+       font-size="14"
+       font-weight="bold"
+       fill="#fff"
+       text-anchor="middle"
+       id="text25">ACCIONES DE SEGURIDAD Y OBSERVACIONES</text>
+    <text
+       x="292"
+       y="389"
+       font-family="Arial, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text26">Seguro</text>
+    <text
+       x="382"
+       y="389"
+       font-family="Arial, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text27">Inseguro</text>
+    <text
+       x="485"
+       y="389"
+       font-family="Arial, sans-serif"
+       font-size="10"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text28">No Aplica</text>
+    <text
+       x="65"
+       y="408"
+       font-family="Arial, sans-serif"
+       font-size="11.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text29">Conducta Personal</text>
+    <text
+       x="65"
+       y="428"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text30">Uso del EPP</text>
+    <rect
+       x="300"
+       y="414"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect30" />
+    <rect
+       x="382"
+       y="414"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect31" />
+    <rect
+       x="464"
+       y="414"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect32" />
+    <text
+       x="65"
+       y="448"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text32">Ojos en la Tarea</text>
+    <rect
+       x="300"
+       y="434"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect33" />
+    <rect
+       x="382"
+       y="434"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect34" />
+    <rect
+       x="464"
+       y="434"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect35" />
+    <text
+       x="65"
+       y="468"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text35">Posición de trabajo segura (línea de fuego)</text>
+    <rect
+       x="300"
+       y="454"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect36" />
+    <rect
+       x="382"
+       y="454"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect37" />
+    <rect
+       x="464"
+       y="454"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect38" />
+    <text
+       x="65"
+       y="488"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text38">Alzando/jalando/empujando/cargando</text>
+    <rect
+       x="300"
+       y="474"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect39" />
+    <rect
+       x="382"
+       y="474"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect40" />
+    <rect
+       x="464"
+       y="474"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect41" />
+    <rect
+       x="58"
+       y="494"
+       width="479"
+       height="4"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect42" />
+    <text
+       x="65"
+       y="515"
+       font-family="Arial, sans-serif"
+       font-size="11.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text42">Ambiente de Trabajo</text>
+    <text
+       x="65"
+       y="535"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text43">Orden y Limpieza</text>
+    <rect
+       x="300"
+       y="521"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect43" />
+    <rect
+       x="382"
+       y="521"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect44" />
+    <rect
+       x="464"
+       y="521"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect45" />
+    <text
+       x="65"
+       y="555"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text45">Iluminación</text>
+    <rect
+       x="300"
+       y="541"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect46" />
+    <rect
+       x="382"
+       y="541"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect47" />
+    <rect
+       x="464"
+       y="541"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect48" />
+    <text
+       x="65"
+       y="575"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text48">Ventilación</text>
+    <rect
+       x="300"
+       y="561"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect49" />
+    <rect
+       x="382"
+       y="561"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect50" />
+    <rect
+       x="464"
+       y="561"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect51" />
+    <text
+       x="65"
+       y="595"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text51">Superficie Nivelada</text>
+    <rect
+       x="300"
+       y="581"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect52" />
+    <rect
+       x="382"
+       y="581"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect53" />
+    <rect
+       x="464"
+       y="581"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect54" />
+    <rect
+       x="58"
+       y="601"
+       width="479"
+       height="4"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect55" />
+    <text
+       x="65"
+       y="622"
+       font-family="Arial, sans-serif"
+       font-size="11.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text55">Equipo/Herramientas</text>
+    <text
+       x="65"
+       y="642"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text56">Adecuadas para la tarea</text>
+    <rect
+       x="300"
+       y="628"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect56" />
+    <rect
+       x="382"
+       y="628"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect57" />
+    <rect
+       x="464"
+       y="628"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect58" />
+    <text
+       x="65"
+       y="662"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text58">Bloqueos/Aislamientos</text>
+    <rect
+       x="300"
+       y="648"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect59" />
+    <rect
+       x="382"
+       y="648"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect60" />
+    <rect
+       x="464"
+       y="648"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect61" />
+    <text
+       x="65"
+       y="682"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text61">Arnés/Línea de vida</text>
+    <rect
+       x="300"
+       y="668"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect62" />
+    <rect
+       x="382"
+       y="668"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect63" />
+    <rect
+       x="464"
+       y="668"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect64" />
+    <rect
+       x="58"
+       y="688"
+       width="479"
+       height="4"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect65" />
+    <text
+       x="65"
+       y="709"
+       font-family="Arial, sans-serif"
+       font-size="11.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text65">Procedimientos</text>
+    <text
+       x="65"
+       y="729"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text66">Análisis de Seguridad del Trabajo</text>
+    <rect
+       x="300"
+       y="715"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect66" />
+    <rect
+       x="382"
+       y="715"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect67" />
+    <rect
+       x="464"
+       y="715"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect68" />
+    <text
+       x="65"
+       y="749"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text68">Permiso de Trabajo</text>
+    <rect
+       x="300"
+       y="735"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect69" />
+    <rect
+       x="382"
+       y="735"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect70" />
+    <rect
+       x="464"
+       y="735"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect71" />
+    <text
+       x="65"
+       y="769"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text71">Instructivo de Trabajo</text>
+    <rect
+       x="300"
+       y="755"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect72" />
+    <rect
+       x="382"
+       y="755"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect73" />
+    <rect
+       x="464"
+       y="755"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect74" />
+    <text
+       x="65"
+       y="789"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text74">Respuesta a Emergencias</text>
+    <rect
+       x="300"
+       y="775"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect75" />
+    <rect
+       x="382"
+       y="775"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect76" />
+    <rect
+       x="464"
+       y="775"
+       width="15"
+       height="15"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect77" />
+    <text
+       x="63.673958"
+       y="806.82703"
+       font-family="Arial, sans-serif"
+       font-size="9.5px"
+       font-weight="normal"
+       fill="#000000"
+       text-anchor="start"
+       id="text77"
+       inkscape:label="Final-observe"><tspan
+         sodipodi:role="line"
+         id="tspan84"
+         x="63.673958"
+         y="806.82703">Observe detenidamente la actividad que se está realizando. Tenga en cuenta: La posición</tspan><tspan
+         sodipodi:role="line"
+         x="63.673958"
+         y="818.70203"
+         id="tspan86">de las personas, el uso de las herramientas y/o equipos, orden, limpieza y,</tspan><tspan
+         sodipodi:role="line"
+         x="63.673958"
+         y="830.57703"
+         id="tspan85">orden del área, reacciones de las personas, el uso de EPP.</tspan></text>
+    <rect
+       x="495"
+       y="792"
+       width="34"
+       height="34"
+       fill="none"
+       stroke="#000"
+       stroke-width="0.7"
+       id="rect78" />
+    <text
+       x="512"
+       y="813"
+       font-family="Arial, sans-serif"
+       font-size="9"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text78">QR</text>
+  </g>
+  <g
+     id="campos_dinamicos"
+     inkscape:label="Campos dinámicos - Android"
+     opacity="0.35" />
+</svg>

@@ -5,6 +5,9 @@ import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.debug.DebugConfig
+import com.sinopec.formatoshsecampo.core.profile.UserProfile
+import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
 import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
@@ -40,29 +43,37 @@ class TarjetaObservacionScreen(private val activity: Activity) {
     private val photos = PhotoAttachmentPanel(activity)
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
     //CODIGO DEBUG LLENADO DE DATOS
-    private val DEBUG_TOS = false
+    private val DEBUG_TOS = DebugConfig.TARJETA_OBSERVACION
 
-    private val checklist = listOf(
-        "Conducta Personal", "Uso del EPP", "Ojos en la Tarea", "Posición de trabajo segura", "Alzando/jalando/empujando/cargando",
-        "Ambiente de Trabajo", "Orden y Limpieza", "Iluminación", "Ventilación", "Superficie Nivelada",
-        "Equipo/Herramientas", "Adecuadas para la tarea", "Bloqueos/Aislamientos", "Arnés/Línea de vida",
-        "Procedimientos", "Análisis de Seguridad del Trabajo", "Permiso de Trabajo", "Instructivo de Trabajo", "Respuesta a Emergencias"
+    private data class ChecklistGroup(val title: String, val items: List<String>)
+
+    private val checklistGroups = listOf(
+        ChecklistGroup("Conducta Personal", listOf("Uso del EPP", "Ojos en la Tarea", "Posición de trabajo segura", "Alzando/jalando/empujando/cargando")),
+        ChecklistGroup("Ambiente de Trabajo", listOf("Orden y Limpieza", "Iluminación", "Ventilación", "Superficie Nivelada")),
+        ChecklistGroup("Equipo/Herramientas", listOf("Adecuadas para la tarea", "Bloqueos/Aislamientos", "Arnés/Línea de vida")),
+        ChecklistGroup("Procedimientos", listOf("Análisis de Seguridad del Trabajo", "Permiso de Trabajo", "Instructivo de Trabajo", "Respuesta a Emergencias"))
     )
 
     fun build(): ScrollView = Ui.scroll(activity, Ui.root(activity).apply {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         addView(Ui.title(activity, "Tarjeta de Observación de Seguridad"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
+        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        cargarUltimoPerfil()
         addView(Ui.label(activity, "Tipo de observación")); addView(tipo)
         addView(tipoOtro.apply { visibility = View.GONE })
         configurarCampoOtroTipo()
         addView(Ui.label(activity, "Área / Departamento")); addView(area)
         addView(actividad)
         addView(Ui.section(activity, "Acciones de seguridad y observaciones"))
-        checklist.forEach { q ->
-            addView(Ui.label(activity, q))
-            val group = Ui.radioRow(activity, listOf("Seguro", "Inseguro", "No Aplica"), 2)
-            checks.add(q to group); addView(group)
+        checklistGroups.forEach { grupo ->
+            addView(Ui.section(activity, grupo.title))
+            grupo.items.forEach { q ->
+                addView(Ui.label(activity, q))
+                val group = Ui.radioRow(activity, listOf("Seguro", "Inseguro", "No Aplica"), 2)
+                checks.add(q to group)
+                addView(group)
+            }
         }
         addView(Ui.section(activity, "Reverso"))
         addView(razon); addView(detalles); addView(acciones)
@@ -154,6 +165,40 @@ class TarjetaObservacionScreen(private val activity: Activity) {
             "Razón: ${razon.text}", "Detalles: ${detalles.text}", "Acciones/Recomendaciones: ${acciones.text}",
             "Punto de acción: ${puntoAccion.selectedItem}", "Asignada a: ${asignada.selectedItem}", "Reporta: ${nombre.text} / ${departamento.selectedItem} / ${puestoFinal()}"
         )
+        guardarPerfilActual()
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
+    }
+
+    private fun cargarUltimoPerfil() {
+        UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
+    }
+
+    private fun seleccionarPerfil() {
+        UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
+            nombre.setText("")
+        })
+    }
+
+    private fun aplicarPerfil(profile: UserProfile) {
+        nombre.setText(profile.nombre)
+        setSpinner(departamento, FormOptions.areasDepartamentos, profile.areaDepartamento)
+        setSpinner(area, FormOptions.areasDepartamentos, profile.areaDepartamento)
+        setSpinner(puesto, FormOptions.puestos, profile.puesto)
+        setSpinner(departamentoJefe, FormOptions.areasDepartamentos, profile.departamentoJefe)
+        departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+    }
+
+    private fun guardarPerfilActual() {
+        UserProfileStore.save(activity, UserProfile(
+            nombre = nombre.text.toString().trim(),
+            puesto = puesto.selectedItem?.toString().orEmpty(),
+            departamentoJefe = departamentoJefe.selectedItem?.toString().orEmpty(),
+            areaDepartamento = departamento.selectedItem?.toString().orEmpty()
+        ))
+    }
+
+    private fun setSpinner(spinner: Spinner, items: List<String>, value: String) {
+        val idx = items.indexOfFirst { it.equals(value, ignoreCase = true) }
+        if (idx >= 0) spinner.setSelection(idx)
     }
 }

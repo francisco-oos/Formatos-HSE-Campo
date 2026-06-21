@@ -6,6 +6,7 @@ import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Base64
 import androidx.core.content.FileProvider
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
@@ -77,101 +78,145 @@ class SimplePdfService(private val activity: Activity) {
     private fun addSupervisionSeguraPage(doc: PdfDocument, json: JSONObject, folio: String) {
         val page = doc.startPage(PdfDocument.PageInfo.Builder(595, 842, 1).create())
         val bitmap = renderSupervisionSeguraAsBitmap(json, folio)
-        page.canvas.drawBitmap(bitmap, 0f, 0f, null)
+
+        // renderSupervisionSeguraAsBitmap genera una imagen interna en alta resolución
+        // para mantener nitidez. Si se dibuja sin RectF, Android toma pixeles reales
+        // y en el PDF solo se ve la esquina superior izquierda. Aquí se ajusta
+        // siempre al tamaño carta usado por la página PDF.
+        page.canvas.drawBitmap(
+            bitmap,
+            null,
+            RectF(0f, 0f, 595f, 842f),
+            Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG)
+        )
         doc.finishPage(page)
     }
 
     private fun renderSupervisionSeguraAsBitmap(json: JSONObject, folio: String): Bitmap {
-        val page = Bitmap.createBitmap(595, 842, Bitmap.Config.ARGB_8888)
+        // -----------------------------------------------------------------
+        // SUPERVISIÓN SEGURA - Plantilla editable.
+        //
+        // El diseño visual base ya no se dibuja completo a mano: se carga desde
+        // app/src/main/res/drawable/supervision_segura_template.png.
+        // La fuente editable está en:
+        // docs/plantillas_editables/supervision_segura/supervision_segura_template.svg
+        //
+        // IMPORTANTE:
+        // - El JSON cifrado NO cambia.
+        // - DATA_KEY y MARKER siguen igual para compatibilidad con el lector Python.
+        // - Solo cambia el fondo visual del PDF y las coordenadas donde se escriben
+        //   respuestas, checks, comentarios y QR.
+        // -----------------------------------------------------------------
+        val scale = 4
+        val page = Bitmap.createBitmap(595 * scale, 842 * scale, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(page)
-        val p = Paint(Paint.ANTI_ALIAS_FLAG)
+        canvas.scale(scale.toFloat(), scale.toFloat())
+        val p = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG)
 
         canvas.drawColor(Color.WHITE)
 
+        val templateNames = listOf(
+            "supervision_segura_template",
+            "supervision_segura_pdf_template",
+            "supervision_segura_formato"
+        )
+
+        var template: Bitmap? = null
+        for (name in templateNames) {
+            val resId = activity.resources.getIdentifier(name, "drawable", activity.packageName)
+            if (resId != 0) {
+                template = BitmapFactory.decodeResource(activity.resources, resId)
+                break
+            }
+        }
+
+        if (template != null) {
+            canvas.drawBitmap(template, null, RectF(0f, 0f, 595f, 842f), p)
+        } else {
+            p.style = Paint.Style.FILL
+            p.color = Color.rgb(225, 0, 0)
+            p.typeface = Typeface.DEFAULT_BOLD
+            p.textSize = 16f
+            canvas.drawText("FALTA PLANTILLA PNG: supervision_segura_template.png", 35f, 60f, p)
+        }
+
+        val blue = Color.rgb(35, 55, 165)
+        val general = json.optJSONObject("datos_generales") ?: JSONObject()
+        val checklist = json.optJSONArray("checklist") ?: JSONArray()
+
+        // Datos generales sobre la plantilla.
         val left = 35f
         val top = 18f
         val right = 560f
-        val bottom = 822f
-        val red = Color.rgb(225, 0, 0)
-        val blue = Color.rgb(35, 55, 165)
+        val logoRight = left + 155f
+        val titleRight = right - 165f
 
-        p.style = Paint.Style.STROKE
-        p.strokeWidth = 1.4f
+        p.style = Paint.Style.FILL
         p.color = Color.BLACK
-        canvas.drawRect(left, top, right, bottom, p)
+        p.typeface = Typeface.DEFAULT_BOLD
+        p.textSize = 10.2f
 
-        drawSupervisionHeader(canvas, p, json, left, top, right)
+        p.color = blue
+        p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+        p.textSize = 10.0f
+        canvas.drawText(fitText(fechaHoraVisible(json), p, 95f), titleRight + 70f, top + 17f, p)
+        canvas.drawText(fitText(jsonGeneral(json, "volante").uppercase(Locale.US), p, 95f), titleRight + 75f, top + 53f, p)
+
+        p.textSize = 9.7f
+        canvas.drawText(fitText(jsonGeneral(json, "categoria").uppercase(Locale("es", "MX")), p, 110f), logoRight + 90f, top + 88f, p)
+        canvas.drawText(fitText(jsonGeneral(json, "nombre").uppercase(Locale("es", "MX")), p, 155f), logoRight + 75f, top + 99f, p)
+        canvas.drawText(fitText(jsonGeneral(json, "id_empleado").uppercase(Locale.US), p, 85f), titleRight + 35f, top + 88f, p)
+
+        // Checks SI / NO / CAMBIO.
+        val boxX = right - 148f
+        val boxW = 43f
+        fun drawMark(rowTop: Float, boxH: Float, respuesta: String) {
+            p.style = Paint.Style.FILL
+            p.color = blue
+            p.typeface = Typeface.DEFAULT_BOLD
+            p.textSize = if (boxH <= 24f) 22f else 25f
+            when (respuesta.uppercase(Locale.US)) {
+                "SI", "SÍ" -> canvas.drawText("✓", boxX + 12f, rowTop + boxH - 5f, p)
+                "NO" -> canvas.drawText("X", boxX + boxW + 12f, rowTop + boxH - 7f, p)
+                "CAMBIO" -> canvas.drawText("X", boxX + boxW * 2f + 12f, rowTop + boxH - 7f, p)
+            }
+        }
 
         val personalY = top + 100f
-        drawRedSection(canvas, p, "PERSONAL", left, personalY, right, red)
+        val personalStartY = personalY + 42f
+        repeat(11) { idx ->
+            val respuesta = checklist.optJSONObject(idx)?.optString("respuesta", "SI") ?: "SI"
+            drawMark(personalStartY + idx * 23f, 23f, respuesta)
+        }
 
-        val personalQuestions = listOf(
-            "¿HOY ME ENCUENTRO BIEN?",
-            "¿TENGO CASCO?",
-            "¿MI OVEROL ESTA EN BUEN ESTADO?",
-            "¿MIS BOTAS ESTAN EN BUEN ESTADO?",
-            "¿MIS POLAINAS ESTAN EN BUEN ESTADO?",
-            "¿MI CHALECO ESTA EN BUEN ESTADO?",
-            "¿CUENTO CON GUANTES?",
-            "¿CUENTO CON LENTES?",
-            "¿CUENTO CON BARBIQUEJO?",
-            "¿MIS COMPAÑEROS SE ENCUENTRAN BIEN?",
-            "¿YO ESTOY LISTO PARA IR A TRABAJAR?"
-        )
+        val toolsY = personalY + 42f + 11 * 23f + 8f
+        val toolsStartY = toolsY + 42f
+        repeat(3) { idx ->
+            val respuesta = checklist.optJSONObject(11 + idx)?.optString("respuesta", "SI") ?: "SI"
+            drawMark(toolsStartY + idx * 41f, 41f, respuesta)
+        }
 
-        drawSupervisionChecklistBlock(
-            canvas, p, json, 0, personalQuestions,
-            x = left + 7f, y = personalY + 42f, rowH = 23f,
-            boxX = right - 148f, boxW = 43f, boxH = 23f, textSize = 10.8f, blue = blue
-        )
+        val jobsY = toolsY + 42f + 3 * 41f + 8f
+        val jobsStartY = jobsY + 42f
+        repeat(2) { idx ->
+            val respuesta = checklist.optJSONObject(14 + idx)?.optString("respuesta", "SI") ?: "SI"
+            drawMark(jobsStartY + idx * 39f, 39f, respuesta)
+        }
 
-        val toolsY = personalY + 42f + personalQuestions.size * 23f + 8f
-        drawRedSection(canvas, p, "EQUIPOS Y HERRAMIENTAS", left, toolsY, right, red)
-
-        val toolsQuestions = listOf(
-            "¿RECIBI MI EQUIPO Y HERRAMIENTA\nEN BUEN ESTADO?",
-            "¿TENGO IDENTIFICADOS LOS RIESGOS A LOS QUE\nESTOY EXPUESTO?",
-            "¿SE QUE HACER EN CASO DE UNA EMERGENCIA?"
-        )
-
-        drawSupervisionChecklistBlock(
-            canvas, p, json, 11, toolsQuestions,
-            x = left + 7f, y = toolsY + 42f, rowH = 41f,
-            boxX = right - 148f, boxW = 43f, boxH = 41f, textSize = 10.0f, blue = blue
-        )
-
-        val jobsY = toolsY + 42f + toolsQuestions.size * 41f + 8f
-        drawRedSection(canvas, p, "TRABAJOS A REALIZAR", left, jobsY, right, red)
-
-        val jobQuestions = listOf(
-            "¿SE PLANEARON LAS ACTIVIDADES CON LA\nIDENTIFICACION DE RIESGOS?",
-            "¿SE TIENEN LOS PROCEDIMIENTOS O\nINSTRUCTIVOS DE TRABAJO?"
-        )
-
-        drawSupervisionChecklistBlock(
-            canvas, p, json, 14, jobQuestions,
-            x = left + 7f, y = jobsY + 42f, rowH = 39f,
-            boxX = right - 148f, boxW = 43f, boxH = 39f, textSize = 10.0f, blue = blue
-        )
-
-        val hydrationY = jobsY + 42f + jobQuestions.size * 39f + 7f
-        p.style = Paint.Style.FILL
-        p.color = red
-        canvas.drawRect(left, hydrationY, right, hydrationY + 42f, p)
-
-        p.color = Color.WHITE
-        p.textSize = 12.7f
-        p.typeface = Typeface.DEFAULT_BOLD
-        drawCenteredText(canvas, p, "PRIMERO QUE TODO TU SEGURIDAD LLEVA AGUA Y SUERO PARA", left, right, hydrationY + 17f)
-        drawCenteredText(canvas, p, "MANTENERTE HIDRATADO", left, right, hydrationY + 34f)
-
-        p.style = Paint.Style.STROKE
-        p.strokeWidth = 1.2f
-        p.color = Color.BLACK
-        canvas.drawRect(left, hydrationY, right, hydrationY + 42f, p)
-
+        // Comentarios.
+        val hydrationY = jobsY + 42f + 2 * 39f + 7f
         val commentTop = hydrationY + 42f
-        drawSupervisionCommentsBox(canvas, p, json, folio, left, commentTop, right, bottom, blue)
+        p.color = blue
+        p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+        p.textSize = 12.5f
+        var cy = commentTop + 32f
+        wrapText(json.optString("comentarios"), 46).take(3).forEach { line ->
+            canvas.drawText(line, left + 10f, cy, p)
+            cy += 18f
+        }
+
+        // QR discreto con folio. El JSON cifrado NO va en el QR; va embebido al final del PDF.
+        drawFolioQr(canvas, p, folio, right - 49f, commentTop + 19f)
 
         return page
     }
@@ -361,220 +406,135 @@ class SimplePdfService(private val activity: Activity) {
     private fun renderTosFrontAsBitmap(json: JSONObject, folio: String): Bitmap {
         val bmp = Bitmap.createBitmap(595, 842, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bmp)
-        val p = Paint(Paint.ANTI_ALIAS_FLAG)
+        val p = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG)
         canvas.drawColor(Color.WHITE)
 
-        val red = Color.rgb(190, 24, 35)
+        // TOS frente: usa la plantilla PNG corregida desde docs/plantillas_editables/tarjeta_observacion.
+        // El JSON cifrado no cambia; solo se dibujan encima los valores capturados.
+        drawTemplateBackground(canvas, p, "tarjeta_observacion_frente_template")
+
         val blue = Color.rgb(0, 118, 172)
         val ink = Color.rgb(35, 55, 165)
-        val left = 58f
-        val top = 32f
-        val right = 537f
-
-        drawTosHeader(canvas, p, left, top, right)
-
         val general = json.optJSONObject("datos_generales") ?: JSONObject()
+        val checklist = json.optJSONArray("checklist") ?: JSONArray()
         val tipoSeleccionado = general.optString("tipo_observacion")
 
-        p.style = Paint.Style.FILL
-        p.color = Color.BLACK
-        p.textSize = 10.5f
-        p.typeface = Typeface.DEFAULT
-
-        // Fecha y hora visibles del momento en que se genera la observación.
-        // Se dibujan debajo del encabezado para evitar traslapes con el título.
-        val fechaHoraY = 153f
-        canvas.drawText("Fecha:", left, fechaHoraY, p)
-        drawHandText(canvas, p, json.optString("fecha"), left + 45f, fechaHoraY + 1f, 125f, ink)
-        canvas.drawText("Hora:", right - 170f, fechaHoraY, p)
-        drawHandText(canvas, p, formatHoraAmPm(json.optString("hora")), right - 118f, fechaHoraY + 1f, 110f, ink)
-
-        drawTosRedBar(canvas, p, "TIPO DE OBSERVACIÓN", left, 171f, right, red)
-
-        val tiposLeft = listOf("Acto Inseguro", "Condición Insegura", "Casi Accidente", "Observación de Seguridad Realizada")
-        val tiposRight = listOf("Acción Positiva", "Oportunidad de Mejora", "Intervención de Seguridad")
-        var y = 194f
-        tiposLeft.forEach { label ->
-            drawSquareOption(canvas, p, left + 6f, y - 10f, label, label == tipoSeleccionado, blue, ink)
-            y += 19f
-        }
-        y = 194f
-        tiposRight.forEach { label ->
-            drawSquareOption(canvas, p, 315f, y - 10f, label, label == tipoSeleccionado, blue, ink)
-            y += 19f
-        }
-
-        canvas.drawText("Área/Departamento", left, 276f, p)
-        drawHandText(canvas, p, general.optString("area_departamento"), left + 128f, 277f, 344f, ink)
-        canvas.drawText("Actividad realizada:", left, 301f, p)
-        drawHandText(canvas, p, general.optString("actividad_realizada"), left + 128f, 302f, 344f, ink)
-
-        drawTosRedBar(canvas, p, "ACCIONES DE SEGURIDAD Y OBSERVACIONES", left, 318f, right, red)
-
-        p.color = Color.BLACK
-        p.typeface = Typeface.DEFAULT_BOLD
-        p.textSize = 10f
-        canvas.drawText("Seguro", 292f, 349f, p)
-        canvas.drawText("Inseguro", 382f, 349f, p)
-        canvas.drawText("No Aplica", 485f, 349f, p)
-
-        val items = listOf(
-            Pair("Conducta Personal", ""),
-            Pair("Uso del EPP", "Conducta Personal"),
-            Pair("Ojos en la Tarea", "Conducta Personal"),
-            Pair("Posición de trabajo segura\n(línea de fuego)", "Conducta Personal"),
-            Pair("Alzando/jalando/empujando/cargando", "Conducta Personal"),
-            Pair("Ambiente de Trabajo", ""),
-            Pair("Orden y Limpieza", "Ambiente de Trabajo"),
-            Pair("Iluminación", "Ambiente de Trabajo"),
-            Pair("Ventilación", "Ambiente de Trabajo"),
-            Pair("Superficie Nivelada", "Ambiente de Trabajo"),
-            Pair("Equipo/Herramientas", ""),
-            Pair("Adecuadas para la tarea", "Equipo/Herramientas"),
-            Pair("Bloqueos/Aislamientos", "Equipo/Herramientas"),
-            Pair("Arnés/Línea de vida", "Equipo/Herramientas"),
-            Pair("Procedimientos", ""),
-            Pair("Análisis de Seguridad del\nTrabajo", "Procedimientos"),
-            Pair("Permiso de Trabajo", "Procedimientos"),
-            Pair("Instructivo de Trabajo", "Procedimientos"),
-            Pair("Respuesta a Emergencias", "Procedimientos")
-        )
-
-        val checklist = json.optJSONArray("checklist") ?: JSONArray()
-        var rowY = 368f
-        items.forEachIndexed { idx, pair ->
-            val label = pair.first
-            val isGroup = pair.second.isBlank()
-            if (isGroup && idx != 0) {
-                p.style = Paint.Style.FILL
-                p.color = red
-                canvas.drawRect(left, rowY - 14f, right, rowY - 10f, p)
-                rowY += 7f
-            }
-
+        fun mark(x: Float, y: Float, checked: Boolean) {
+            if (!checked) return
             p.style = Paint.Style.FILL
-            p.color = Color.BLACK
-            p.typeface = if (isGroup) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
-            p.textSize = if (isGroup) 11.5f else 10.7f
-
-            val lines = label.split("\n")
-            lines.forEachIndexed { lineIdx, line ->
-                canvas.drawText(line, left + 7f, rowY + (lineIdx * 12f), p)
-            }
-
-            if (!isGroup) {
-                val answer = findTosAnswer(checklist, label.replace("\n", " "))
-                drawTosAnswerBoxes(canvas, p, 300f, rowY - 14f, answer, blue, ink)
-            }
-            rowY += if (lines.size > 1) 25f else 20f
+            p.color = ink
+            p.typeface = Typeface.DEFAULT_BOLD
+            p.textSize = 20f
+            canvas.drawText("✓", x + 1f, y + 15f, p)
         }
 
-        p.color = Color.BLACK
-        p.typeface = Typeface.DEFAULT
-        p.textSize = 9.5f
-        val note = "Observe detenidamente la actividad que se esta realizando, tenga en cuenta: La posición de las personas, el uso de las herramientas y/o equipos, la limpieza y orden del área, las reacciones de las personas, el uso del EPP"
-        var noteY = 770f
-        wrapText(note, 82).take(3).forEach {
-            canvas.drawText(it, left + 4f, noteY, p)
-            noteY += 13f
+        drawHandText(canvas, p, json.optString("fecha"), 103f, 155f, 125f, ink)
+        drawHandText(canvas, p, formatHoraAmPm(json.optString("hora")), 420f, 155f, 110f, ink)
+
+        val tipoBoxes = mapOf(
+            "Acto Inseguro" to Pair(64f, 184f),
+            "Condición Insegura" to Pair(64f, 204f),
+            "Casi Accidente" to Pair(64f, 224f),
+            "Observación de Seguridad Realizada" to Pair(64f, 244f),
+            "Otro" to Pair(64f, 264f),
+            "Acción Positiva" to Pair(315f, 184f),
+            "Oportunidad de Mejora" to Pair(315f, 204f),
+            "Intervención de Seguridad" to Pair(315f, 224f)
+        )
+        val tipoBase = if (tipoSeleccionado.startsWith("Otro", true)) "Otro" else tipoSeleccionado
+        tipoBoxes[tipoBase]?.let { mark(it.first, it.second, true) }
+        if (tipoSeleccionado.startsWith("Otro", true)) {
+            val otro = general.optString("tipo_observacion_otro").ifBlank { tipoSeleccionado.removePrefix("Otro:").trim() }
+            drawHandText(canvas, p, otro, 142f, 286f, 340f, ink)
         }
 
-        // QR discreto: solo folio, no contiene JSON.
-        drawFolioQr(canvas, p, folio, right - 42f, 792f)
+        drawHandText(canvas, p, general.optString("area_departamento"), 184f, 310f, 300f, ink)
+        drawHandText(canvas, p, general.optString("actividad_realizada"), 186f, 335f, 300f, ink)
+
+        val rowBoxes = mapOf(
+            "Uso del EPP" to 415f,
+            "Ojos en la Tarea" to 436f,
+            "Posición de trabajo segura" to 457f,
+            "Alzando/jalando/empujando/cargando" to 477f,
+            "Orden y Limpieza" to 523f,
+            "Iluminación" to 544f,
+            "Ventilación" to 565f,
+            "Superficie Nivelada" to 586f,
+            "Adecuadas para la tarea" to 630f,
+            "Bloqueos/Aislamientos" to 650f,
+            "Arnés/Línea de vida" to 671f,
+            "Análisis de Seguridad del Trabajo" to 715f,
+            "Permiso de Trabajo" to 735f,
+            "Instructivo de Trabajo" to 756f,
+            "Respuesta a Emergencias" to 776f
+        )
+        rowBoxes.forEach { (label, y) ->
+            val answer = findTosAnswer(checklist, label)
+            when (answer.uppercase(Locale("es", "MX"))) {
+                "SEGURO" -> mark(300f, y, true)
+                "INSEGURO" -> mark(382f, y, true)
+                "NO APLICA" -> mark(465f, y, true)
+            }
+        }
+
+        drawFolioQr(canvas, p, folio, 496f, 792f)
         return bmp
     }
 
     private fun renderTosBackAsBitmap(json: JSONObject, folio: String): Bitmap {
         val bmp = Bitmap.createBitmap(595, 842, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bmp)
-        val p = Paint(Paint.ANTI_ALIAS_FLAG)
+        val p = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG)
         canvas.drawColor(Color.WHITE)
 
-        val red = Color.rgb(190, 24, 35)
-        val ink = Color.rgb(35, 55, 165)
-        val left = 58f
-        val top = 32f
-        val right = 537f
-        drawTosHeader(canvas, p, left, top, right)
+        // TOS reverso: plantilla PNG corregida desde docs/plantillas_editables/tarjeta_observacion.
+        drawTemplateBackground(canvas, p, "tarjeta_observacion_reverso_template")
 
+        val blue = Color.rgb(0, 118, 172)
+        val ink = Color.rgb(35, 55, 165)
         val obs = json.optJSONObject("observaciones") ?: JSONObject()
         val acciones = json.optJSONObject("acciones") ?: JSONObject()
         val reporta = json.optJSONObject("datos_reportante") ?: json.optJSONObject("reporta") ?: JSONObject()
 
-        var y = 168f
-        drawLinedTextArea(canvas, p, "Razón de la Observación", obs.optString("razon"), left, y, right, 3, ink)
-        y += 118f
-        drawLinedTextArea(canvas, p, "Detalles de la Observación", obs.optString("detalles"), left, y, right, 3, ink)
-        y += 118f
-        drawLinedTextArea(canvas, p, "Acciones Tomadas/Recomendaciones", acciones.optString("acciones_tomadas_recomendaciones"), left, y, right, 3, ink)
-
-        y += 135f
-        val punto = acciones.opt("punto_accion_generado").toString().equals("true", true) || acciones.optString("punto_accion_generado").equals("Sí", true)
-        drawCheckBox(canvas, p, left + 4f, y - 12f, 14f, punto, Color.rgb(0, 118, 172), ink)
         p.style = Paint.Style.FILL
-        p.color = Color.BLACK
-        p.typeface = Typeface.DEFAULT
-        p.textSize = 12f
-        canvas.drawText("Punto de Acción Generado?", left + 26f, y, p)
+        p.color = ink
+        p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+        p.textSize = 13.5f
 
-        y += 34f
-        canvas.drawText("Acción Asignada a:", left, y, p)
-        drawHandText(canvas, p, acciones.optString("accion_asignada_a"), left + 115f, y + 1f, right - left - 120f, ink)
-
-        y += 36f
-        p.typeface = Typeface.DEFAULT_BOLD
-        p.textSize = 10.7f
-        canvas.drawText("Datos de quien realiza la observación/Reporte", left, y, p)
-        p.typeface = Typeface.DEFAULT
-        p.textSize = 12f
-        y += 24f
-        canvas.drawText("Nombre:", left, y, p)
-        drawHandText(canvas, p, reporta.optString("nombre"), left + 70f, y + 1f, right - left - 78f, ink)
-        y += 24f
-        canvas.drawText("Departamento:", left, y, p)
-        drawHandText(canvas, p, reporta.optString("departamento"), left + 105f, y + 1f, right - left - 112f, ink)
-        y += 24f
-        canvas.drawText("Puesto de Trabajo:", left, y, p)
-        drawHandText(canvas, p, reporta.optString("puesto_trabajo"), left + 132f, y + 1f, right - left - 140f, ink)
-
-        // Bloque inferior PARE / PIENSE / ACTÚE.
-        val baseY = 722f
-        p.typeface = Typeface.DEFAULT_BOLD
-        p.textSize = 19f
-        p.color = red
-        canvas.drawText("PARE", left + 20f, baseY, p)
-        p.color = Color.rgb(230, 180, 0)
-        canvas.drawText("PIENSE", left + 20f, baseY + 37f, p)
-        p.color = Color.rgb(0, 125, 62)
-        canvas.drawText("ACTÚE", left + 20f, baseY + 74f, p)
-
-        p.color = Color.BLACK
-        p.typeface = Typeface.DEFAULT
-        p.textSize = 10.5f
-        val pare = listOf(
-            "Toma un momento para detectar conductas y/o situaciones de alerta",
-            "Evalúa las decisiones y cambios que implementarás, maneja los sentimientos y toma control de la situación",
-            "Exprésate y Actúa asertivamente ante la situación, habiendo evaluado alternativas, puedes tomar la decisión"
-        )
-        var textY = baseY - 4f
-        pare.forEach { line ->
-            wrapText(line, 58).take(2).forEach {
-                canvas.drawText(it, left + 112f, textY, p)
-                textY += 13f
+        fun writeLines(text: String, xFirst: Float, yFirst: Float, xNext: Float, yStep: Float, maxChars: Int, maxLines: Int) {
+            var y = yFirst
+            wrapText(text, maxChars).take(maxLines).forEachIndexed { idx, line ->
+                canvas.drawText(line, if (idx == 0) xFirst else xNext, y, p)
+                y += yStep
             }
-            textY += 6f
         }
 
-        p.style = Paint.Style.FILL
-        p.color = red
-        canvas.drawRect(left, 790f, right, 817f, p)
-        p.color = Color.WHITE
-        p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC)
-        p.textSize = 14f
-        drawCenteredText(canvas, p, "La seguridad no es negociable y depende de mi", left, right, 808f)
+        writeLines(obs.optString("razon"), 192f, 169f, 63f, 28f, 52, 4)
+        writeLines(obs.optString("detalles"), 192f, 286f, 63f, 28f, 52, 4)
+        writeLines(acciones.optString("acciones_tomadas_recomendaciones"), 250f, 403f, 63f, 28f, 45, 4)
 
-        drawFolioQr(canvas, p, folio, right - 42f, 742f)
+        val punto = acciones.opt("punto_accion_generado").toString().equals("true", true) || acciones.optString("punto_accion_generado").equals("Sí", true)
+        if (punto) {
+            p.color = ink
+            p.typeface = Typeface.DEFAULT_BOLD
+            p.textSize = 21f
+            canvas.drawText("✓", 62f, 539f, p)
+        }
+
+        drawHandText(canvas, p, acciones.optString("accion_asignada_a"), 175f, 574f, 355f, ink)
+        drawHandText(canvas, p, reporta.optString("nombre"), 128f, 632f, 405f, ink)
+        drawHandText(canvas, p, reporta.optString("departamento"), 164f, 658f, 370f, ink)
+        drawHandText(canvas, p, reporta.optString("puesto_trabajo"), 190f, 683f, 344f, ink)
+
+        drawFolioQr(canvas, p, folio, 496f, 742f)
         return bmp
+    }
+
+    private fun drawTemplateBackground(canvas: Canvas, p: Paint, drawableName: String) {
+        val resId = activity.resources.getIdentifier(drawableName, "drawable", activity.packageName)
+        if (resId == 0) return
+        val template = BitmapFactory.decodeResource(activity.resources, resId) ?: return
+        canvas.drawBitmap(template, null, RectF(0f, 0f, 595f, 842f), p)
     }
 
     private fun drawTosHeader(canvas: Canvas, p: Paint, left: Float, top: Float, right: Float) {
@@ -811,6 +771,9 @@ class SimplePdfService(private val activity: Activity) {
 
         // Carga de plantilla PNG desde drawable.
         val templateNames = listOf(
+            // Nueva plantilla generada desde SVG editable.
+            "lista_chequeo_supervision_editable_template",
+            // Fallbacks anteriores por compatibilidad.
             "lista_chequeo_supervision_segura",
             "supervision_segura_formato",
             "supervicion_segura",
@@ -855,18 +818,25 @@ class SimplePdfService(private val activity: Activity) {
         // Datos generales sobre la plantilla PNG.
         // Se acortan los textos de las primeras celdas para evitar que invadan
         // las etiquetas vecinas cuando el usuario captura valores largos.
-        p.textSize = 9.5f
-        canvas.drawText(general.optString("brigada").take(10), 62f, 132f, p)
-        canvas.drawText(general.optString("proyecto").take(18), 154f, 137f, p)
-        canvas.drawText(general.optString("departamento_supervisado").take(26), 382f, 137f, p)
-
-        p.textSize = 10.5f
-        canvas.drawText(general.optString("quien_supervisa").take(30), 155f, 177f, p)
-        canvas.drawText(general.optString("puesto").take(24), 365f, 177f, p)
+        p.textSize = 9.8f
+        // Coordenadas actualizadas para la plantilla nueva exportada desde Inkscape
+        // (lista_chequeo_supervision_segura.png, 1617x1976 px, ajustada a página 595x842).
+        // Si se modifica el SVG y se mueve algún recuadro, aquí se ajustan únicamente estas X/Y.
+        // Coordenadas V7 ajustadas sobre la plantilla nueva 1447x2048
+        // lista_chequeo_supervision_editable_template.png.
+        // Las respuestas se colocan debajo de las etiquetas para no encimarse.
+        canvas.drawText(fitText(general.optString("brigada"), p, 48f), 84f, 164f, p)
+        canvas.drawText(fitText(general.optString("proyecto"), p, 115f), 150f, 164f, p)
+        canvas.drawText(fitText(general.optString("departamento_supervisado"), p, 185f), 392f, 164f, p)
 
         p.textSize = 10.2f
-        canvas.drawText(fitText(general.optString("supervisor_trabajo"), p, 170f),205f,218f,p)
-        canvas.drawText(fechaHoraVisible(json).take(26), 395f, 218f, p)
+        canvas.drawText(fitText(general.optString("quien_supervisa"), p, 225f), 145f, 208f, p)
+        canvas.drawText(fitText(general.optString("puesto"), p, 190f), 392f, 208f, p)
+
+        p.textSize = 10.0f
+        // Fila inferior de encabezado: se sube ligeramente para que no invada la barra roja "DEL PERSONAL".
+        canvas.drawText(fitText(general.optString("supervisor_trabajo"), p, 120f), 190f, 230f, p)
+        canvas.drawText(fitText(fechaHoraVisible(json), p, 155f), 495f, 232f, p)
 
         // -----------------------------------------------------------------
         // Checks SI/NO.
@@ -886,35 +856,35 @@ class SimplePdfService(private val activity: Activity) {
         //
         // Por eso NO usamos una sola fórmula simple i * rowH.
         // Sumamos sectionGap cuando el índice ya pasó una barra roja.
-        val siX = 533f
-        val noX = 563f
+        val siX = 526f
+        val noX = 561f
 
-        // Posiciones Y medidas sobre la plantilla PNG real.
-        // Cada valor corresponde al baseline visual de la marca para cada pregunta.
-        // No usar incremento fijo: las barras rojas de sección agregan separación.
+        // Posiciones Y actualizadas para la plantilla nueva.
+        // Se calcularon a partir de las líneas reales de la imagen 1617x1976 px
+        // y luego se llevaron a la página PDF 595x842.
         val checkYs = listOf(
-            250f, // 1
-            266f, // 2
-            282f, // 3
-            297f, // 4
-            313f, // 5
-            329f, // 6
+            268f, // 1
+            284f, // 2
+            300f, // 3
+            316f, // 4
+            332f, // 5
+            348f, // 6
 
-            361f, // 7
-            377f, // 8
-            393f, // 9
-            409f, // 10
-            425f, // 11
-            440f, // 12
+            393f, // 7
+            409f, // 8
+            425f, // 9
+            441f, // 10
+            457f, // 11
+            473f, // 12
 
-            478f, // 13
-            502f, // 14
-            522f, // 15
-            541f, // 16
-            561f, // 17
-            581f, // 18
-            600f, // 19
-            620f  // 20
+            515f, // 13
+            539f, // 14*
+            563f, // 15
+            587f, // 16
+            611f, // 17
+            630f, // 18
+            654f, // 19
+            678f  // 20
         )
 
         for (i in 0 until minOf(checklist.length(), checkYs.size)) {
@@ -934,15 +904,45 @@ class SimplePdfService(private val activity: Activity) {
         p.color = blue
         p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
         p.textSize = 11.5f
-        var obsY = 666f
-        wrapText(json.optString("comentarios"), 78).take(4).forEach { line ->
-            canvas.drawText(line, 35f, obsY, p)
+        var obsY = 724f
+        wrapText(json.optString("comentarios"), 92).take(4).forEach { line ->
+            canvas.drawText(line, 24f, obsY, p)
             obsY += 18f
         }
 
+        // Firmas capturadas con el dedo. Se guardan dentro del JSON cifrado como PNG Base64
+        // y aquí solo se dibujan sobre los recuadros del formato físico.
+        val firmas = json.optJSONObject("firmas") ?: JSONObject()
+        drawSignatureFromBase64(
+            canvas,
+            firmas.optString("supervisor_trabajo_png_b64"),
+            RectF(55f, 775f, 249f, 796f)
+        )
+        drawSignatureFromBase64(
+            canvas,
+            firmas.optString("quien_supervisa_png_b64"),
+            RectF(345f, 775f, 539f, 796f)
+        )
+
         // QR discreto con folio. El JSON cifrado NO va en el QR; va embebido al final del PDF.
-        drawFolioQr(canvas, p, folio, 550f, 780f)
+        drawFolioQr(canvas, p, folio, 554f, 815f)
         return bmp
+    }
+
+    private fun drawSignatureFromBase64(canvas: Canvas, pngBase64: String, target: RectF) {
+        if (pngBase64.isBlank()) return
+        try {
+            val bytes = Base64.decode(pngBase64, Base64.DEFAULT)
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: return
+            canvas.drawBitmap(
+                bitmap,
+                null,
+                target,
+                Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG)
+            )
+        } catch (_: Exception) {
+            // Si una firma viene vacía o dañada, no se interrumpe la generación del PDF.
+        }
     }
 
     private fun drawListaInfoCell(canvas: Canvas, p: Paint, label: String, value: String, left: Float, top: Float, right: Float, bottom: Float, boldValue: Boolean = false) {

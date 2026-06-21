@@ -11,6 +11,9 @@ import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.R
 import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.debug.DebugConfig
+import com.sinopec.formatoshsecampo.core.profile.UserProfile
+import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
 import com.sinopec.formatoshsecampo.domain.HseReport
@@ -39,7 +42,7 @@ private data class ParteChaleco(
 
 /** Inspección visual e interactiva de chaleco salvavidas. */
 class InspeccionChalecoScreen(private val activity: Activity) {
-    private val DEBUG_CHALECO = false
+    private val DEBUG_CHALECO = DebugConfig.INSPECCION_CHALECO
 
     private val brigada = Ui.spinner(activity, FormOptions.brigadas)
     private val proyecto = Ui.spinner(activity, FormOptions.proyectos)
@@ -77,6 +80,8 @@ class InspeccionChalecoScreen(private val activity: Activity) {
         setBackgroundColor(Color.rgb(246, 247, 249))
         addView(Ui.title(activity, "Inspección de Chaleco Salvavidas"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
+        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        cargarUltimoPerfil()
 
         addView(card().apply {
             addView(Ui.section(activity, "Datos generales"))
@@ -363,6 +368,48 @@ class InspeccionChalecoScreen(private val activity: Activity) {
             ""
         )
         partes.forEach { p -> lines.add("${p.id}. ${p.nombre}: ${p.estado.texto}${if (p.observacion.isNotBlank()) " - ${p.observacion}" else ""}") }
+        guardarPerfilActual()
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
+    }
+
+    private fun cargarUltimoPerfil() {
+        UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
+    }
+
+    private fun seleccionarPerfil() {
+        UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
+            empleado.setText("")
+            idEmpleado.setText("")
+        })
+    }
+
+    private fun aplicarPerfil(profile: UserProfile) {
+        empleado.setText(profile.nombre)
+        idEmpleado.setText(profile.idEmpleado)
+        setSpinner(puesto, FormOptions.puestos, profile.puesto)
+        setSpinner(departamentoJefe, FormOptions.areasDepartamentos, profile.departamentoJefe)
+        departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+        setSpinner(areaDepartamento, FormOptions.areasDepartamentos, profile.areaDepartamento)
+        setSpinner(volante, FormOptions.volantes, profile.volante)
+        setSpinner(brigada, FormOptions.brigadas, profile.brigada)
+        setSpinner(proyecto, FormOptions.proyectos, profile.proyecto)
+    }
+
+    private fun guardarPerfilActual() {
+        UserProfileStore.save(activity, UserProfile(
+            nombre = empleado.text.toString().trim(),
+            idEmpleado = idEmpleado.text.toString().trim(),
+            puesto = puesto.selectedItem?.toString().orEmpty(),
+            departamentoJefe = departamentoJefe.selectedItem?.toString().orEmpty(),
+            areaDepartamento = areaDepartamento.selectedItem?.toString().orEmpty(),
+            volante = volante.selectedItem?.toString().orEmpty(),
+            brigada = brigada.selectedItem?.toString().orEmpty(),
+            proyecto = proyecto.selectedItem?.toString().orEmpty()
+        ))
+    }
+
+    private fun setSpinner(spinner: Spinner, items: List<String>, value: String) {
+        val idx = items.indexOfFirst { it.equals(value, ignoreCase = true) }
+        if (idx >= 0) spinner.setSelection(idx)
     }
 }

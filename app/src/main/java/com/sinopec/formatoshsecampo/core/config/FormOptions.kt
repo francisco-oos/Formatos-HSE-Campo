@@ -37,12 +37,12 @@ object FormOptions {
     )
 
     val areasDepartamentos = listOf(
-        "Adquisición (Registro)",
+        "Adquisición de datos (Registro)",
         "Perforación",
         "Topografía",
         "Gestoría",
         "Logística",
-        "Jefatura",
+        "Operaciones",
         "Inmuebles",
         "QC"
     )

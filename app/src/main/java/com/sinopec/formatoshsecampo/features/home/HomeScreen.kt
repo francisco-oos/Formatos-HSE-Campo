@@ -26,7 +26,7 @@ class HomeScreen(private val activity: Activity) {
         })
 
         addFormatCard(
-            title = "Supervisión Segura",
+            title = "Check Supervisión Segura",
             subtitle = "Revisión diaria rápida del personal, equipo y condiciones de trabajo.",
             badge = "HSE",
             action = { activity.setContentView(SupervisionDiariaScreen(activity).build()) }
@@ -50,7 +50,8 @@ class HomeScreen(private val activity: Activity) {
         addFormatCard(
             title = "Inspección de Chaleco Salvavidas",
             subtitle = "Inspección visual por partes: costuras, broches, reflejantes, flotación, cintas y ajuste.",
-            badge = "CHALECO",
+            //badge = "CHALECO",
+            badge = "\uD83E\uDDBA",
             action = { activity.setContentView(InspeccionChalecoScreen(activity).build()) }
         )
     })

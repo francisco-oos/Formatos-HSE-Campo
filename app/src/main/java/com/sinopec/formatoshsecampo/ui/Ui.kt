@@ -20,7 +20,7 @@ object Ui {
 
     fun root(activity: Activity): LinearLayout = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL
-        setPadding(28, 28, 28, 28)
+        setPadding(28, 28, 28, 230)
     }
 
     fun title(activity: Activity, text: String): TextView = TextView(activity).apply {
@@ -62,7 +62,13 @@ object Ui {
         adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_dropdown_item, items)
     }
 
-    fun scroll(activity: Activity, content: LinearLayout): ScrollView = ScrollView(activity).apply { addView(content) }
+    fun scroll(activity: Activity, content: LinearLayout): ScrollView = ScrollView(activity).apply {
+        // Evita que el teclado o la barra de navegación tapen los campos y el botón final.
+        isFillViewport = false
+        clipToPadding = false
+        setPadding(0, 0, 0, 180)
+        addView(content)
+    }
 
     fun radioRow(activity: Activity, options: List<String>, defaultIndex: Int = 0): RadioGroup {
         return RadioGroup(activity).apply {

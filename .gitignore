@@ -1,12 +1,36 @@
+# Gradle / Android
 .gradle/
 build/
 **/build/
-local.properties
-.idea/
-*.iml
-.DS_Store
-captures/
 .externalNativeBuild/
 .cxx/
+captures/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Local machine files
+local.properties
+.DS_Store
+Thumbs.db
+
+# Generated artifacts
 *.apk
 *.aab
+*.apks
+*.idsig
+
+# Signing keys / secrets
+*.jks
+*.keystore
+
+# Logs / temp
+*.log
+*.tmp
+*.bak
+
+# Kotlin / Java generated
+out/

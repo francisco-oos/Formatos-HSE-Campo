@@ -5,6 +5,9 @@ import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.debug.DebugConfig
+import com.sinopec.formatoshsecampo.core.profile.UserProfile
+import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
 import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.photo.PhotoAttachmentPanel
 import com.sinopec.formatoshsecampo.domain.HseFormat
@@ -38,7 +41,7 @@ class SupervisionDiariaScreen(private val activity: Activity) {
      * true  = carga datos de prueba al abrir el formato.
      * false = captura normal en campo.
      */
-    private val DEBUG_SUPERVISION_DIARIA = false
+    private val DEBUG_SUPERVISION_DIARIA = DebugConfig.SUPERVISION_DIARIA
     private val photos = PhotoAttachmentPanel(activity)
 
     private val preguntas = listOf(
@@ -53,8 +56,10 @@ class SupervisionDiariaScreen(private val activity: Activity) {
 
     fun build(): ScrollView = Ui.scroll(activity, Ui.root(activity).apply {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
-        addView(Ui.title(activity, "Supervisión Segura"))
+        addView(Ui.title(activity, "Check Supervisión Segura"))
         addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
+        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        cargarUltimoPerfil()
         addView(nombre); addView(idEmpleado)
         addView(Ui.label(activity, "Categoría")); addView(categoria)
         addView(departamentoJefeContainer)
@@ -126,7 +131,43 @@ class SupervisionDiariaScreen(private val activity: Activity) {
             }
         }
         val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoriaFinal()}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text}")
+        guardarPerfilActual()
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
+    }
+
+    private fun cargarUltimoPerfil() {
+        UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
+    }
+
+    private fun seleccionarPerfil() {
+        UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
+            nombre.setText("")
+            idEmpleado.setText("")
+        })
+    }
+
+    private fun aplicarPerfil(profile: UserProfile) {
+        nombre.setText(profile.nombre)
+        idEmpleado.setText(profile.idEmpleado)
+        setSpinner(categoria, FormOptions.puestos, profile.puesto)
+        setSpinner(departamentoJefe, FormOptions.areasDepartamentos, profile.departamentoJefe)
+        departamentoJefeContainer.visibility = if (categoria.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+        setSpinner(volante, FormOptions.volantes, profile.volante)
+    }
+
+    private fun guardarPerfilActual() {
+        UserProfileStore.save(activity, UserProfile(
+            nombre = nombre.text.toString().trim(),
+            idEmpleado = idEmpleado.text.toString().trim(),
+            puesto = categoria.selectedItem?.toString().orEmpty(),
+            departamentoJefe = departamentoJefe.selectedItem?.toString().orEmpty(),
+            volante = volante.selectedItem?.toString().orEmpty()
+        ))
+    }
+
+    private fun setSpinner(spinner: Spinner, items: List<String>, value: String) {
+        val idx = items.indexOfFirst { it.equals(value, ignoreCase = true) }
+        if (idx >= 0) spinner.setSelection(idx)
     }
 }
 

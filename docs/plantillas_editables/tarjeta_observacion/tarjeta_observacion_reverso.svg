@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="595"
+   height="842"
+   viewBox="0 0 595 842"
+   version="1.1"
+   id="svg38"
+   sodipodi:docname="tarjeta_observacion_reverso.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   inkscape:export-filename="tarjeta_observacion_reverso_template.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs38" />
+  <sodipodi:namedview
+     id="namedview38"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:zoom="1.6896661"
+     inkscape:cx="294.43687"
+     inkscape:cy="528.21087"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="campos_dinamicos" />
+  <title
+     id="title1">Tarjeta de Observación de Seguridad - Reverso</title>
+  <desc
+     id="desc1">Plantilla editable. No contiene JSON ni datos cifrados.</desc>
+  <rect
+     width="595"
+     height="842"
+     fill="white"
+     id="rect1" />
+  <g
+     id="diseno_base"
+     inkscape:label="Diseño base">
+    <rect
+       x="58"
+       y="32"
+       width="479"
+       height="108"
+       fill="none"
+       stroke="#000"
+       stroke-width="1.2"
+       id="rect2" />
+    <line
+       x1="223"
+       y1="32"
+       x2="223"
+       y2="103.89819"
+       stroke="#000000"
+       stroke-width="1"
+       id="line2" />
+    <line
+       x1="407"
+       y1="32"
+       x2="407"
+       y2="104"
+       stroke="#000"
+       stroke-width="1"
+       id="line3" />
+    <line
+       x1="407"
+       y1="62"
+       x2="537"
+       y2="62"
+       stroke="#000"
+       stroke-width="1"
+       id="line4" />
+    <line
+       x1="407"
+       y1="92"
+       x2="537"
+       y2="92"
+       stroke="#000"
+       stroke-width="1"
+       id="line5" />
+    <line
+       x1="58"
+       y1="104"
+       x2="537"
+       y2="104"
+       stroke="#000"
+       stroke-width="1"
+       id="line6" />
+    <image
+       href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAB3CAMAAACntrAFAAAAA3NCSVQICAjb4U/gAAAAclBMVEX////LzMzzn3pcWln88u3ta0PpRyjmABIjGBX5yrNIRUTnHRbqUzDp6en96uD9+vnqTy3oMx6AgIHrXDf3upzxj2j1q4n84NDteVDb29z71sK5urrwhFzmDRN2dXU3MS/4w6mfoKBpZ2etra6Pj5CnW0ATftvSAAAAX3pUWHRSYXcgcHJvZmlsZSB0eXBlIEFQUDEAAAiZ40pPzUstykxWKCjKT8vMSeVSAANjEy4TSxNLo0QDAwMLAwgwNDAwNgSSRkC2OVQo0QAFmBqYWZoZmxmaAzGIzwUASLYUyTrUQzIAAA9mSURBVHic7Z3pmqo4EIZZFRdERJFFEZG5/1scskE2SOJp2zPP5Psxw1HAkDepVKoS2nGsrKysrKysrKysrKysrKysrKysrKysrKysrL6iQ9Wec8/z8nNbHb5dGCtDHdpLuLqvKaXh5Ww5/ld0yDOG3qTMsxT/A2rDkV96zMJiULhPR4rh+dsFtFpU4q0wvX/+6a7J9PlhkxfkKy/4YgmtlnVGvW11qZ5RFAlfVxdEMc2/UDYrDW0yCOgfv3ScAeFWes4Nmtlj+8tls9LRDQIstlHkziMcnB1vB8+z1vRvU3WEYK71YEHrJYQDRAh7tfnN4lkplUMq285xB4TPZYQDb2hyvd8rnpVSFzgIRtEJIuxVCB3Hg332t4pnpVQB3MzNgyBs1AidCjinWbJ4jtWvCZjFfeD4BGGngdAJQuCZ/k4BrRQCLMLh/yPCrQ5C1HezXyiflUohGdVGhI9ECyGchliG39cF90EKYRTrIYQMbx8un5VK55EghbDURAhtqY22fVcHMB3ExxNCVxehsx+urz5YPiuljuv1neQAJ4S1NsIgHaYjHyyflUpghj4GyiaEL22ETmWHw6/qwIRYJoS9PkLoDllT+jUNc/rdFGCZEHYGCJ10Gk21lFzb3LvdiqK4Xbxz9WsZjyq/hNnxuM8Kr/3q+pHD+VIMBTlm4eV8/cN7bYYO1E7/nBD6zksfITCl2qsxgjycFnGg/LGwIKfY08I9/MJ8GHIPwnyZSVpFdVvRP3rPcslJ530mV3HJOUNT7XUksU5X78g8/vHyRxSP7Mx8QvgwQQhiA5oezeG2ky6rKphnZRm36MOMveLC3DdnvxTotKH4m7uL0BUv0sKRplbQ7bRdOpUv+6RrITmreH8cAt2HbgITwsgIIRhRtbqhN7Mwbs0iYZsp9rZ4CEzbPTNf7TiEFYd/PI9tBzj9sqDVNAXeKE5lyk4U3GbOK9417BkXHqMR1gYIwQRfZzSUdIVJ++k8LYRMyRcRLoBZXXXPJKUkt34HYZvOnnh/b13glf8NCmFihFC4k1QzfYFoYqKFkOn3CwiTxYbDhpbUCNcr7P29gXDRTL83MbvxuSIKYeyaIAT1G2qcs6xxdqOH8E7lKucRBiv+Ok700gMNhKSlmSOUjYK0lBUoUcqPYBRC1wzhhq3RmVNUIqO6HkK63c4iVBJkGOogxP3WGKGK4DsMxWqnENZmCMXmIIiry/R4FEYGYko1EVIezSxCNUHalmohRJVminDOkaFlzPAiXEMhfBmNhbCEywtpWCc8rIZ6SCp+dMB+mS7CaRiYQ6g03lBjU9BCiNqqIcKz+ty1+Xqyo5AmohA+DRG2qqkhU5lj06l2skfQRTiVfwahXsWtU2KM9BDC0ushJJbpoFeQtdksH9yVm41QCE8m88JBwV3x+7TVpGJ6bE3giYU2wrWcFUEYaFbcaEBYhNkVqNrkbHlQW2ULnl7kIlXC3WFWZjkfSb+hEDYGMVKo/fJgeJgrKDvTQHWvj5DUvRyh2oMgwm2ZRTgNM6F4trTtzUkvlANkNLXwxNGLQuj3hggVg+GVKSjlqNGVf9+hVquPkDixUoRy6yUNEIVjnYgfArGeF/hRFqFiIZ/UqZIWxAhhJo6eFMLtiSCM9TIJ+fJzsNW5a6cvwuLm5fl5U10PQYIsrAFCHBSSIhSdwGNeHYJrKwnUom7IGdKp+OytQIlMEIrjZnrZHILDxuOc8sJsLFyJlo9G2GGEwcPVut2GGeIEJVytZV41f7YBQtwMZQj5n1yvWvIDB4Euav2zvZANo5siFIrujc+eU33xZhjtBv4HfwmF8OFjhPEj1r7fUhsSB/Q0m9u8b4IQDZ8yhPwAFNJthv9yBz+d7YXs7McQIW/QU7rer9jI3m/GOaerGNCnEUYPgtBH3yUvv3sST8/FPZOulHQ5dz8TIMy8jdgbjRDCviJDyDkz3HpX3rjBss/2wr1wroE7w2XC7my7TYAxvd/eSFVUEg+WRhiRsdB36zp26q5pGrDjyYkbtG9mUFcP/wmaoZvWJXjKduH35mdGaXHm2pIRQvi9DGEq+YwS16agQZ5DKElHsgh3oVywYXBtia+lgYSYudTRRtL7RYRwSTBYkxi7cR0/TsNJSb+F6Bzn5QeB/4z84YlOLnCPFkNsSx5+yloRM4SgJUoQsj6wJPDBIoa8pAiTihs5V7j+NNSCU1l/VFz9/u7ii1bS+wWEZbSNGj/q4zh+buPg0YCzXrg9l93QBeEuKMfpXVDFiwgF74IVbUnMEIJssQQhO9pJgvBs14LtmUW4W0EJ5YaTJ/0AW3AXPvoZaSHsB4vpP0qnBsGaOujAuPh6oJPj6OGUPvZX/QZU8fKy7mr5aXfT1YYIhxmBBCFLSBJBZk07DLJ9JEbKmoMfXHO7USP0nYHiEy7tPiWP7hH0gF7zBOPhYFV73y0f2NnptspeKAREBY3LIDQQMsYplCFkcchaF2NJ7+I1M9qR+tMQKDvbdN/JCs5oI1krIfbCMoh8dxgQ+7h5dk4TDU11u32AFyoEpeP3zgl1SbeLlWOhA6bxyw9MQhMaCFumk13Zlg4Rsu6KrGismwkM+UfyheyZP7gxWtMjTXrgwvhb/1k3QT0AG75uXhH4sIzqAeow0Yj7bQnrXW3m2+V4L+4rGgjPDv2vvaQXfgoh7kZ/AUIwEtB+dl0n0knFE7gr0anu+1P5GhyYUxQBL2dg1jSJ4z6ih9+dwI0U80Ki8+IKGu0wt8eOdSnjMnzSkJLR5y8wpMBBHHtN8Hw07gxCMNq5Tjmw6qPSKZvXM6lfcULm9UHpwnqX5K5mVHnzFJEp1UK4kJDXc2c4N0PPnRnv8xe4M3TG9wVfUyKf2g9DIFDixAGgiaeEopQ5X1pXYUk3qXxSNK4aHAnCeQ9XMqlYvzGpEJVO9lh/XvixSQWYaiMXMO7AllAgKcITfVHtz93OM9yynVTja/mEB9RDOL8c5Z2pfYEfYkHMGn4O4U4uyeOI4VTv3XdL5rjOATIcyZYh7BvqmgCzlqjg18jraCNQgDWtiTCZWxsuC7AJi/S5n5YE2O4p0Sor+JA8F+YO5Epw1dDigQ13ylrjqgOq0GOB93URLjKEJ7rf+f3s7SS5K6mS4EDXRcW5qHAw1ETIhy45hFzNcbNgPlUhCXNnCZHkOf4gzM3G0wI4Ww7fsa/AnzlAgmNCUIYwpvrdc9aMqryZNvcutyLMjqt0xxlc1ppCe6aLkJsWcAj50WpPl4+nj8bx2UyFKINkE7+EZ0fjqoixyN4wp9ngzgCCr/ETaaZikvuYT+Dny7sqGCg75iu2O5ghnEl/4KwEHwzajZV0EGLuaBD4DMKFlG9CN6W9McQiHSZ4UUS5K8sIE3d2IISlXFr2wc6zmfkj20aNDOmcR4MRiinK46WtroMfJUb60BWzKV9RJghF3zm9nYeCnG/ceL3n024KVVXCcVL0wgUl62VvmY2eMBEKtieZuDNA0rArRqi9BnEs0du9ULGCTWdNudaNBHWTMwo1vf3JFOFZMSvkLB49oIvLUkwQShf7kvSuziJ4JMUiRIlYhKuDXEbboOjn0lQ9pt+xCEIQxzZDuFJNKdh2SK0eOTD9CK2gMkAo3fE2LgVWpEZGkbK/bUjXd6lGy6TYlzfK6J0Fgx7wZWuURoSdIULwPMupZ37STAJDLVvLyKCZIJRZy3GRhd4S3HsqL6VBL5xTu1BKmQzz96w3CjQibAwR7pXhW+EZVoWX5zd+VqC9FHgyOJJ1VdM6GT1TOrMtxqQXzmj0D/Qak+mr0MCAlxxo73BE2Jsh5Pfsy6SVisNOrRFCPgqzZpY6zcwcGZ1nCvkDvXBy8Za3+CKZJqLAhKJxcnqSNrozz4cRwqNOfFTDKyMGzQyhWJkUwkS9IWV2i+hP9kIdg2CchwLGsh4qhnJDRoT11gQh8CnVqcKr8hHW8n1AKoTizJlecJioPAnaeH2wF6r7oXEyGMwJo5KNi40IXd8AYaB6WizlZr/xeQ0RCuMsu2Z0eX8TExH5KELFWGKeJIAz+AC43VNkYULYGSAMccpbqWWG1ETDEKFQN9yy37lo+BpsIXTmb/SzhhRcMz+YpK1ODbIC/ugDlWTkPyIsT/oIQQVpBveuC8ufbtT0xhQhP87yK7elr1xaS/701Gd7IfijZjP5scs7L6J7YUbg6Vr82Ygw7rURAm9UP9cre5HWoLvxC7xYs8MHIYUK2Uh+NxXrjUW4GPh88wVe0jeYGe5JIwII4cQetGB8iwnhUxchCK4I2xUWL8iLI/sUqyLn0lThihame2M+5PrPhfnyKCnQlV2xkxZnSRYwZ26zuF2zWulI4uUFeUg//y7jn15bwJDCACnwaFL0zCPCoKYQ1tQGQ/oYHF7TtXFIYXiKCuQPB3n5efN7r5U8tB54h+Q+vOQLmxt/QcEmv2X74z675Zs/eJVnHJFkLzAJK3inCaE7IaypnPBryvA7T/AHSYCHMnSIbj4XbPU5gXnDFjZG4JCkB4c2pPG0/GlEzR6D0dIH117g2tLuK8/wPxeiVANbCkbx9EojTAhCFGqL4NLDEzp2p2M/cTb42Ld/ven3VaKUUudiT+xAIXQQwqQh6d8XdVxPx49yPN7qbei2+kklT1T5PYmRTfNCGAPfwp76Kksf2ExwXOPjEn1elmD/7wDy+dzijYZWv6wSJQb9APg0VxrhdkQYw3BqB48DmOlvIELi17zgQNhbhN9STdJK1aqlEfojQpdCWMLxkkVYQ7emsQi/phIybMBfrqdipDCPsYyQzDQQQmhfrb4jd3IzKYS9EuEWqsYI3edT7xVDVh8QdExhF6IQPpUIkZ4YodU3hSYFYEpAIXxZhP8hdaMlpRC6SoR+B+QSQ/p6WUP6LSVk7s4gLDU90gQj3NoY29eUdFMIjUIYjwhLCmFMzQtZj9ROKr4j9+W+tnhQA52KQhiMCOsYbANG0Rk3jsdeSOJpNex/NtL9FdXRJJj9pRA68E2Iwfh1icLiUB1awNj3/amJ4R93ggG257ef5/+nF0UQLeumEaL3kcZogwx4J+mA8HHCOMdr+4ScEs1vALb6kJ40QfzeSgohfitwTAjCI7jUG1rQenRjE8TQ9sFf14kmiLfvwnSDO3qh8OVc4IUzEBpybV4+HgPdyaOJrRX9gqbkH+yD/BsvXJh6QF2z7NC3cRTR77tISn/8V7K1VvTXlQy+5STy6XAYDIYxBu92CqjP0SXocysrKysrKysrKysrKysrKysrKysrKysrK6v/jf4FJvTKi90eDlcAAAAASUVORK5CYII="
+       x="58.898006"
+       y="33.489838"
+       width="161.57132"
+       height="67.836662"
+       preserveAspectRatio="xMidYMid"
+       id="image6" />
+    <text
+       x="315.0"
+       y="60"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text6">Sistema de</text>
+    <text
+       x="315.0"
+       y="87"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text7">Gestión de HSE</text>
+    <text
+       x="297.5"
+       y="124"
+       font-family="Arial, sans-serif"
+       font-size="14.2"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text8">TARJETA DE OBSERVACIÓN DE SEGURIDAD</text>
+    <text
+       x="415"
+       y="52"
+       font-family="Arial, sans-serif"
+       font-size="9.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text9">Revisión: 02</text>
+    <text
+       x="415"
+       y="82"
+       font-family="Arial, sans-serif"
+       font-size="9.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text10">Fecha:30/05/23</text>
+    <text
+       x="58"
+       y="168"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text11">Razón de la Observación</text>
+    <line
+       x1="189"
+       y1="172"
+       x2="537"
+       y2="172"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line11" />
+    <line
+       x1="58"
+       y1="200"
+       x2="537"
+       y2="200"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line12" />
+    <line
+       x1="58"
+       y1="228"
+       x2="537"
+       y2="228"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line13" />
+    <line
+       x1="58"
+       y1="256"
+       x2="537"
+       y2="256"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line14" />
+    <text
+       x="58"
+       y="286"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text14">Detalles de la Observación</text>
+    <line
+       x1="189"
+       y1="290"
+       x2="537"
+       y2="290"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line15" />
+    <line
+       x1="58"
+       y1="318"
+       x2="537"
+       y2="318"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line16" />
+    <line
+       x1="58"
+       y1="346"
+       x2="537"
+       y2="346"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line17" />
+    <line
+       x1="58"
+       y1="374"
+       x2="537"
+       y2="374"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line18" />
+    <text
+       x="58"
+       y="404"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text18">Acciones Tomadas/Recomendaciones</text>
+    <line
+       x1="246"
+       y1="408"
+       x2="537"
+       y2="408"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line19" />
+    <line
+       x1="58"
+       y1="436"
+       x2="537"
+       y2="436"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line20" />
+    <line
+       x1="58"
+       y1="464"
+       x2="537"
+       y2="464"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line21" />
+    <line
+       x1="58"
+       y1="492"
+       x2="537"
+       y2="492"
+       stroke="#505050"
+       stroke-width="0.8"
+       id="line22" />
+    <rect
+       x="62"
+       y="525"
+       width="14"
+       height="14"
+       fill="none"
+       stroke="#0076ac"
+       stroke-width="1.4"
+       id="rect22" />
+    <text
+       x="84"
+       y="538"
+       font-family="Arial, sans-serif"
+       font-size="12"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text22">Punto de Acción Generado?</text>
+    <text
+       x="58"
+       y="572"
+       font-family="Arial, sans-serif"
+       font-size="12"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text23">Acción Asignada a:</text>
+    <line
+       x1="173"
+       y1="575"
+       x2="537"
+       y2="575"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line23" />
+    <text
+       x="58"
+       y="608"
+       font-family="Arial, sans-serif"
+       font-size="10.7"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="start"
+       id="text24">Datos de quien realiza la observación/Reporte</text>
+    <text
+       x="58"
+       y="632"
+       font-family="Arial, sans-serif"
+       font-size="12"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text25">Nombre:</text>
+    <line
+       x1="128"
+       y1="635"
+       x2="537"
+       y2="635"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line25" />
+    <text
+       x="58"
+       y="656"
+       font-family="Arial, sans-serif"
+       font-size="12"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text26">Departamento:</text>
+    <line
+       x1="163"
+       y1="659"
+       x2="537"
+       y2="659"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line26" />
+    <text
+       x="58"
+       y="680"
+       font-family="Arial, sans-serif"
+       font-size="12"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text27">Puesto de Trabajo:</text>
+    <line
+       x1="190"
+       y1="683"
+       x2="537"
+       y2="683"
+       stroke="#969696"
+       stroke-width="0.8"
+       id="line27" />
+    <text
+       x="78"
+       y="722"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#be1823"
+       text-anchor="start"
+       id="text28">PARE</text>
+    <text
+       x="78"
+       y="759"
+       font-family="Arial, sans-serif"
+       font-size="19"
+       font-weight="bold"
+       fill="#e6b400"
+       text-anchor="start"
+       id="text29">PIENSE</text>
+    <text
+       x="78"
+       y="788"
+       font-family="Arial, sans-serif"
+       font-size="19px"
+       font-weight="bold"
+       fill="#007d3e"
+       text-anchor="start"
+       id="text30">ACTÚE</text>
+    <text
+       x="170"
+       y="718"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text31">Toma un momento para detectar conductas y/o situaciones de alerta</text>
+    <text
+       x="170"
+       y="755"
+       font-family="Arial, sans-serif"
+       font-size="10.5"
+       font-weight="normal"
+       fill="#000"
+       text-anchor="start"
+       id="text32">Evalúa las decisiones y cambios que implementarás.</text>
+    <text
+       x="170"
+       y="786.67352"
+       font-family="Arial, sans-serif"
+       font-size="10.5px"
+       font-weight="normal"
+       fill="#000000"
+       text-anchor="start"
+       id="text33">Exprésate y actúa asertivamente ante la situación.</text>
+    <rect
+       x="60.367332"
+       y="800.06116"
+       width="479"
+       height="27"
+       fill="#be1823"
+       stroke="#be1823"
+       stroke-width="1"
+       id="rect33"
+       style="display:inline" />
+    <text
+       x="299.86734"
+       y="818.06116"
+       font-family="Arial, sans-serif"
+       font-size="14px"
+       font-weight="bold"
+       fill="#ffffff"
+       text-anchor="middle"
+       font-style="italic"
+       id="text34">La seguridad no es negociable y depende de mi</text>
+    <rect
+       x="495"
+       y="742"
+       width="34"
+       height="34"
+       fill="none"
+       stroke="#000"
+       stroke-width="0.7"
+       id="rect34" />
+    <text
+       x="512"
+       y="763"
+       font-family="Arial, sans-serif"
+       font-size="9"
+       font-weight="bold"
+       fill="#000"
+       text-anchor="middle"
+       id="text35">QR</text>
+  </g>
+  <g
+     id="campos_dinamicos"
+     inkscape:label="Campos dinámicos - Android"
+     opacity="0.35" />
+</svg>
