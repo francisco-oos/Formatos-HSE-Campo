@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.draft.FormDraftStore
 import com.sinopec.formatoshsecampo.core.debug.DebugConfig
 import com.sinopec.formatoshsecampo.core.profile.UserProfile
 import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
@@ -22,6 +23,7 @@ import android.widget.ScrollView
 
 /** Formato basado en el Word: Lista de Chequeo Supervisión Segura SSM-HSE-F-20. */
 class SupervisionWordScreen(private val activity: Activity) {
+    private val DRAFT_KEY = "lista_chequeo_supervision"
     /*
      * MODO PRUEBAS DEL FORMATO LISTA DE CHEQUEO.
      *
@@ -77,8 +79,7 @@ class SupervisionWordScreen(private val activity: Activity) {
     fun build(): ScrollView = Ui.scroll(activity, Ui.root(activity).apply {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         addView(Ui.title(activity, "Formato Supervisión Segura"))
-        addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
-        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        addView(accionesSuperiores())
         cargarUltimoPerfil()
         addView(Ui.label(activity, "Brigada")); addView(brigada)
         addView(Ui.label(activity, "Proyecto")); addView(proyecto)
@@ -106,6 +107,7 @@ class SupervisionWordScreen(private val activity: Activity) {
         addView(Ui.section(activity, "Fotos anexas"))
         addView(photos.view)
 
+        cargarBorrador()
         if (DEBUG_LISTA_CHEQUEO) {
             cargarDatosPrueba()
         }
@@ -113,6 +115,98 @@ class SupervisionWordScreen(private val activity: Activity) {
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
 
+
+
+    private fun accionesSuperiores(): LinearLayout = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+
+        val fila = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        val botonMenu = Ui.button(activity, "← Menú", {
+            guardarBorrador()
+            activity.setContentView(HomeScreen(activity).build())
+        }).apply {
+            textSize = 12f
+        }
+
+        val botonPerfil = Ui.button(activity, "No soy yo / cambiar perfil", {
+            seleccionarPerfil()
+        }).apply {
+            textSize = 12f
+        }
+
+        fila.addView(
+            botonMenu,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(0, 0, 6, 0)
+            }
+        )
+        fila.addView(
+            botonPerfil,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2f).apply {
+                setMargins(6, 0, 0, 0)
+            }
+        )
+
+        addView(fila)
+
+        val botonLimpiar = Ui.button(activity, "Limpiar todo", {
+            confirmarLimpiarTodo()
+        }).apply {
+            textSize = 12f
+            setTextColor(android.graphics.Color.WHITE)
+            setBackgroundColor(Ui.red)
+        }
+
+        addView(
+            botonLimpiar,
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(0, 8, 0, 14)
+            }
+        )
+    }
+
+    private fun confirmarLimpiarTodo() {
+        android.app.AlertDialog.Builder(activity)
+            .setTitle("Limpiar formulario")
+            .setMessage("Se borrará toda la información capturada en este formato. ¿Deseas continuar?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Sí, limpiar") { _, _ ->
+                limpiarFormulario()
+                Toast.makeText(activity, "Formulario limpio", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+
+    private fun limpiarFormulario() {
+        FormDraftStore.clear(DRAFT_KEY)
+        brigada.setSelection(0)
+        proyecto.setSelection(0)
+        departamento.setSelection(0)
+        quienSupervisa.setText("")
+        puesto.setSelection(0)
+        departamentoJefe.setSelection(0)
+        departamentoJefeContainer.visibility = View.GONE
+        supervisorTrabajo.setText("")
+        observaciones.setText("")
+        checks.forEach { (_, group) -> resetRadioGroup(group, 0) }
+        firmaSupervisorTrabajo.clear()
+        firmaQuienSupervisa.clear()
+        photos.photos.clear()
+        photos.refresh()
+    }
+
+    private fun resetRadioGroup(group: RadioGroup, defaultIndex: Int = 0) {
+        if (group.childCount > defaultIndex) {
+            val rb = group.getChildAt(defaultIndex) as? RadioButton
+            if (rb != null) group.check(rb.id) else group.clearCheck()
+        } else {
+            group.clearCheck()
+        }
+    }
 
     private fun configurarDepartamentoJefe() {
         puesto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -170,17 +264,64 @@ class SupervisionWordScreen(private val activity: Activity) {
         }
         val lines = listOf("Brigada: ${brigada.selectedItem}", "Proyecto: ${proyecto.selectedItem}", "Departamento supervisado: ${departamento.selectedItem}", "Supervisa: ${quienSupervisa.text}", "Puesto: ${puestoFinal()}", "Supervisor del trabajo: ${supervisorTrabajo.text}", "Observaciones: ${observaciones.text}")
         guardarPerfilActual()
+        FormDraftStore.clear(DRAFT_KEY)
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
+
+
+private fun guardarBorrador() {
+    FormDraftStore.save(DRAFT_KEY, JSONObject()
+        .put("brigada", brigada.selectedItemPosition)
+        .put("proyecto", proyecto.selectedItemPosition)
+        .put("departamento", departamento.selectedItemPosition)
+        .put("quien_supervisa", quienSupervisa.text.toString())
+        .put("puesto", puesto.selectedItemPosition)
+        .put("departamento_jefe", departamentoJefe.selectedItemPosition)
+        .put("supervisor_trabajo", supervisorTrabajo.text.toString())
+        .put("observaciones", observaciones.text.toString())
+        .put("checks", JSONArray().apply { checks.forEach { (_, g) -> put(selected(g)) } })
+        .put("firma_supervisor_trabajo_png_b64", firmaSupervisorTrabajo.toPngBase64())
+        .put("firma_quien_supervisa_png_b64", firmaQuienSupervisa.toPngBase64())
+    )
+}
+
+private fun cargarBorrador() {
+    val d = FormDraftStore.get(DRAFT_KEY) ?: return
+    brigada.setSelection(d.optInt("brigada", brigada.selectedItemPosition).coerceAtLeast(0))
+    proyecto.setSelection(d.optInt("proyecto", proyecto.selectedItemPosition).coerceAtLeast(0))
+    departamento.setSelection(d.optInt("departamento", departamento.selectedItemPosition).coerceAtLeast(0))
+    quienSupervisa.setText(d.optString("quien_supervisa"))
+    puesto.setSelection(d.optInt("puesto", puesto.selectedItemPosition).coerceAtLeast(0))
+    departamentoJefe.setSelection(d.optInt("departamento_jefe", departamentoJefe.selectedItemPosition).coerceAtLeast(0))
+    departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+    supervisorTrabajo.setText(d.optString("supervisor_trabajo"))
+    observaciones.setText(d.optString("observaciones"))
+    val arr = d.optJSONArray("checks") ?: return
+    for (i in 0 until kotlin.math.min(arr.length(), checks.size)) {
+        val value = arr.optString(i)
+        val group = checks[i].second
+        for (c in 0 until group.childCount) {
+            val rb = group.getChildAt(c) as? RadioButton ?: continue
+            if (rb.text.toString() == value) group.check(rb.id)
+        }
+    }
+}
 
     private fun cargarUltimoPerfil() {
         UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
     }
 
     private fun seleccionarPerfil() {
+        guardarBorrador()
         UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
             quienSupervisa.setText("")
             supervisorTrabajo.setText("")
+            brigada.setSelection(0)
+            proyecto.setSelection(0)
+            departamento.setSelection(0)
+            puesto.setSelection(0)
+            departamentoJefe.setSelection(0)
+            departamentoJefeContainer.visibility = View.GONE
         })
     }
 

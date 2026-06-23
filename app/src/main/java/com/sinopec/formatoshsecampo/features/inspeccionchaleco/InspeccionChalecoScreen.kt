@@ -11,6 +11,7 @@ import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.R
 import com.sinopec.formatoshsecampo.core.config.FormOptions
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.draft.FormDraftStore
 import com.sinopec.formatoshsecampo.core.debug.DebugConfig
 import com.sinopec.formatoshsecampo.core.profile.UserProfile
 import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
@@ -42,6 +43,7 @@ private data class ParteChaleco(
 
 /** Inspección visual e interactiva de chaleco salvavidas. */
 class InspeccionChalecoScreen(private val activity: Activity) {
+    private val DRAFT_KEY = "inspeccion_chaleco"
     private val DEBUG_CHALECO = DebugConfig.INSPECCION_CHALECO
 
     private val brigada = Ui.spinner(activity, FormOptions.brigadas)
@@ -79,8 +81,7 @@ class InspeccionChalecoScreen(private val activity: Activity) {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         setBackgroundColor(Color.rgb(246, 247, 249))
         addView(Ui.title(activity, "Inspección de Chaleco Salvavidas"))
-        addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
-        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        addView(accionesSuperiores())
         cargarUltimoPerfil()
 
         addView(card().apply {
@@ -134,9 +135,98 @@ class InspeccionChalecoScreen(private val activity: Activity) {
         })
 
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
+        cargarBorrador()
         if (DEBUG_CHALECO) cargarDatosPrueba()
         actualizarResumen()
     })
+
+
+    private fun accionesSuperiores(): LinearLayout = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+
+        val fila = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        val botonMenu = Ui.button(activity, "← Menú", {
+            guardarBorrador()
+            activity.setContentView(HomeScreen(activity).build())
+        }).apply {
+            textSize = 12f
+        }
+
+        val botonPerfil = Ui.button(activity, "No soy yo / cambiar perfil", {
+            seleccionarPerfil()
+        }).apply {
+            textSize = 12f
+        }
+
+        fila.addView(
+            botonMenu,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(0, 0, 6, 0)
+            }
+        )
+        fila.addView(
+            botonPerfil,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2f).apply {
+                setMargins(6, 0, 0, 0)
+            }
+        )
+
+        addView(fila)
+
+        val botonLimpiar = Ui.button(activity, "Limpiar todo", {
+            confirmarLimpiarTodo()
+        }).apply {
+            textSize = 12f
+            setTextColor(android.graphics.Color.WHITE)
+            setBackgroundColor(Ui.red)
+        }
+
+        addView(
+            botonLimpiar,
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(0, 8, 0, 14)
+            }
+        )
+    }
+
+    private fun confirmarLimpiarTodo() {
+        android.app.AlertDialog.Builder(activity)
+            .setTitle("Limpiar formulario")
+            .setMessage("Se borrará toda la información capturada en este formato. ¿Deseas continuar?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Sí, limpiar") { _, _ ->
+                limpiarFormulario()
+                Toast.makeText(activity, "Formulario limpio", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+
+    private fun limpiarFormulario() {
+        FormDraftStore.clear(DRAFT_KEY)
+        brigada.setSelection(0)
+        proyecto.setSelection(0)
+        areaDepartamento.setSelection(0)
+        volante.setSelection(0)
+        empleado.setText("")
+        idEmpleado.setText("")
+        puesto.setSelection(0)
+        departamentoJefe.setSelection(0)
+        departamentoJefeContainer.visibility = View.GONE
+        supervisor.setText("")
+        observacionesGenerales.setText("")
+        partes.forEach { parte ->
+            parte.estado = EstadoParte.SIN_REVISAR
+            parte.observacion = ""
+            actualizarBoton(parte)
+        }
+        photos.photos.clear()
+        photos.refresh()
+        actualizarResumen()
+    }
 
     private fun configurarDepartamentoJefe() {
         puesto.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -369,17 +459,75 @@ class InspeccionChalecoScreen(private val activity: Activity) {
         )
         partes.forEach { p -> lines.add("${p.id}. ${p.nombre}: ${p.estado.texto}${if (p.observacion.isNotBlank()) " - ${p.observacion}" else ""}") }
         guardarPerfilActual()
+        FormDraftStore.clear(DRAFT_KEY)
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
+
+
+private fun guardarBorrador() {
+    FormDraftStore.save(DRAFT_KEY, JSONObject()
+        .put("brigada", brigada.selectedItemPosition)
+        .put("proyecto", proyecto.selectedItemPosition)
+        .put("area_departamento", areaDepartamento.selectedItemPosition)
+        .put("volante", volante.selectedItemPosition)
+        .put("empleado", empleado.text.toString())
+        .put("id_empleado", idEmpleado.text.toString())
+        .put("puesto", puesto.selectedItemPosition)
+        .put("departamento_jefe", departamentoJefe.selectedItemPosition)
+        .put("supervisor", supervisor.text.toString())
+        .put("observaciones_generales", observacionesGenerales.text.toString())
+        .put("partes", JSONArray().apply {
+            partes.forEach { p ->
+                put(JSONObject()
+                    .put("id", p.id)
+                    .put("estado", p.estado.name)
+                    .put("observacion", p.observacion))
+            }
+        })
+    )
+}
+
+private fun cargarBorrador() {
+    val d = FormDraftStore.get(DRAFT_KEY) ?: return
+    brigada.setSelection(d.optInt("brigada", brigada.selectedItemPosition).coerceAtLeast(0))
+    proyecto.setSelection(d.optInt("proyecto", proyecto.selectedItemPosition).coerceAtLeast(0))
+    areaDepartamento.setSelection(d.optInt("area_departamento", areaDepartamento.selectedItemPosition).coerceAtLeast(0))
+    volante.setSelection(d.optInt("volante", volante.selectedItemPosition).coerceAtLeast(0))
+    empleado.setText(d.optString("empleado"))
+    idEmpleado.setText(d.optString("id_empleado"))
+    puesto.setSelection(d.optInt("puesto", puesto.selectedItemPosition).coerceAtLeast(0))
+    departamentoJefe.setSelection(d.optInt("departamento_jefe", departamentoJefe.selectedItemPosition).coerceAtLeast(0))
+    departamentoJefeContainer.visibility = if (puesto.selectedItem?.toString() == "Jefe de Departamento") View.VISIBLE else View.GONE
+    supervisor.setText(d.optString("supervisor"))
+    observacionesGenerales.setText(d.optString("observaciones_generales"))
+    val arr = d.optJSONArray("partes") ?: return
+    for (i in 0 until arr.length()) {
+        val o = arr.optJSONObject(i) ?: continue
+        val id = o.optInt("id")
+        val parte = partes.firstOrNull { it.id == id } ?: continue
+        parte.estado = runCatching { EstadoParte.valueOf(o.optString("estado")) }.getOrDefault(EstadoParte.SIN_REVISAR)
+        parte.observacion = o.optString("observacion")
+        actualizarBoton(parte)
+    }
+    actualizarResumen()
+}
 
     private fun cargarUltimoPerfil() {
         UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
     }
 
     private fun seleccionarPerfil() {
+        guardarBorrador()
         UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
             empleado.setText("")
             idEmpleado.setText("")
+            puesto.setSelection(0)
+            departamentoJefe.setSelection(0)
+            areaDepartamento.setSelection(0)
+            volante.setSelection(0)
+            brigada.setSelection(0)
+            proyecto.setSelection(0)
+            departamentoJefeContainer.visibility = View.GONE
         })
     }
 

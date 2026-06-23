@@ -2,6 +2,7 @@ package com.sinopec.formatoshsecampo.ui
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -17,6 +18,7 @@ import java.io.ByteArrayOutputStream
  */
 class SignaturePadView(context: Context) : View(context) {
     private val path = Path()
+    private var restoredBitmap: Bitmap? = null
     private val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.rgb(20, 35, 120)
         style = Paint.Style.STROKE
@@ -40,14 +42,17 @@ class SignaturePadView(context: Context) : View(context) {
 
     init {
         setBackgroundColor(Color.WHITE)
-        minimumHeight = 210
+        minimumHeight = 360
         setPadding(8, 8, 8, 8)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val desiredHeight = 220
-        val height = resolveSize(desiredHeight, heightMeasureSpec)
         val width = MeasureSpec.getSize(widthMeasureSpec)
+        val desiredHeight = when {
+            width > 0 -> (width * 0.55f).toInt().coerceIn(360, 520)
+            else -> 420
+        }
+        val height = resolveSize(desiredHeight, heightMeasureSpec)
         setMeasuredDimension(width, height)
     }
 
@@ -57,6 +62,7 @@ class SignaturePadView(context: Context) : View(context) {
         if (!hasSignature) {
             canvas.drawText("Firma aquí", width / 2f, height / 2f + 10f, hintPaint)
         }
+        restoredBitmap?.let { canvas.drawBitmap(it, null, android.graphics.RectF(0f, 0f, width.toFloat(), height.toFloat()), null) }
         canvas.drawPath(path, strokePaint)
     }
 
@@ -85,15 +91,28 @@ class SignaturePadView(context: Context) : View(context) {
 
     fun clear() {
         path.reset()
+        restoredBitmap = null
         hasSignature = false
         invalidate()
     }
+
+
+fun loadFromPngBase64(value: String) {
+    if (value.isBlank()) return
+    runCatching {
+        val bytes = Base64.decode(value, Base64.DEFAULT)
+        restoredBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        hasSignature = restoredBitmap != null
+        invalidate()
+    }
+}
 
     fun toPngBase64(): String {
         if (!hasSignature || width <= 0 || height <= 0) return ""
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.TRANSPARENT)
+        restoredBitmap?.let { canvas.drawBitmap(it, null, android.graphics.RectF(0f, 0f, width.toFloat(), height.toFloat()), null) }
         canvas.drawPath(path, strokePaint)
         val out = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)

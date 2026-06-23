@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.*
 import com.sinopec.formatoshsecampo.MainActivity
 import com.sinopec.formatoshsecampo.core.pdf.SimplePdfService
+import com.sinopec.formatoshsecampo.core.draft.FormDraftStore
 import com.sinopec.formatoshsecampo.core.debug.DebugConfig
 import com.sinopec.formatoshsecampo.core.profile.UserProfile
 import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
@@ -22,6 +23,7 @@ import android.widget.ScrollView
 
 /** Formato equivalente a la app estable Supervisión Segura, dejado como módulo separado. */
 class SupervisionDiariaScreen(private val activity: Activity) {
+    private val DRAFT_KEY = "supervision_diaria"
     private val nombre = Ui.input(activity, "Nombre")
     private val idEmpleado = Ui.input(activity, "ID empleado")
     private val categoria = Ui.spinner(activity, FormOptions.puestos)
@@ -57,8 +59,7 @@ class SupervisionDiariaScreen(private val activity: Activity) {
     fun build(): ScrollView = Ui.scroll(activity, Ui.root(activity).apply {
         (activity as? MainActivity)?.bindPhotoPanel(photos)
         addView(Ui.title(activity, "Check Supervisión Segura"))
-        addView(Ui.button(activity, "← Menú", { activity.setContentView(HomeScreen(activity).build()) }))
-        addView(Ui.button(activity, "No soy yo / cambiar perfil", { seleccionarPerfil() }))
+        addView(accionesSuperiores())
         cargarUltimoPerfil()
         addView(nombre); addView(idEmpleado)
         addView(Ui.label(activity, "Categoría")); addView(categoria)
@@ -74,12 +75,101 @@ class SupervisionDiariaScreen(private val activity: Activity) {
         addView(Ui.section(activity, "Comentarios y fotos"))
         addView(comentarios); addView(photos.view)
 
+        cargarBorrador()
         if (DEBUG_SUPERVISION_DIARIA) {
             cargarDatosPrueba()
         }
 
         addView(Ui.button(activity, "Generar PDF y compartir", { generate() }))
     })
+
+
+    private fun accionesSuperiores(): LinearLayout = LinearLayout(activity).apply {
+        orientation = LinearLayout.VERTICAL
+
+        val fila = LinearLayout(activity).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+
+        val botonMenu = Ui.button(activity, "← Menú", {
+            guardarBorrador()
+            activity.setContentView(HomeScreen(activity).build())
+        }).apply {
+            textSize = 12f
+        }
+
+        val botonPerfil = Ui.button(activity, "No soy yo / cambiar perfil", {
+            seleccionarPerfil()
+        }).apply {
+            textSize = 12f
+        }
+
+        fila.addView(
+            botonMenu,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                setMargins(0, 0, 6, 0)
+            }
+        )
+        fila.addView(
+            botonPerfil,
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2f).apply {
+                setMargins(6, 0, 0, 0)
+            }
+        )
+
+        addView(fila)
+
+        val botonLimpiar = Ui.button(activity, "Limpiar todo", {
+            confirmarLimpiarTodo()
+        }).apply {
+            textSize = 12f
+            setTextColor(android.graphics.Color.WHITE)
+            setBackgroundColor(Ui.red)
+        }
+
+        addView(
+            botonLimpiar,
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(0, 8, 0, 14)
+            }
+        )
+    }
+
+    private fun confirmarLimpiarTodo() {
+        android.app.AlertDialog.Builder(activity)
+            .setTitle("Limpiar formulario")
+            .setMessage("Se borrará toda la información capturada en este formato. ¿Deseas continuar?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Sí, limpiar") { _, _ ->
+                limpiarFormulario()
+                Toast.makeText(activity, "Formulario limpio", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+
+    private fun limpiarFormulario() {
+        FormDraftStore.clear(DRAFT_KEY)
+        nombre.setText("")
+        idEmpleado.setText("")
+        categoria.setSelection(0)
+        departamentoJefe.setSelection(0)
+        departamentoJefeContainer.visibility = View.GONE
+        volante.setSelection(0)
+        comentarios.setText("")
+        checks.forEach { (_, group) -> resetRadioGroup(group, 0) }
+        photos.photos.clear()
+        photos.refresh()
+    }
+
+    private fun resetRadioGroup(group: RadioGroup, defaultIndex: Int = 0) {
+        if (group.childCount > defaultIndex) {
+            val rb = group.getChildAt(defaultIndex) as? RadioButton
+            if (rb != null) group.check(rb.id) else group.clearCheck()
+        } else {
+            group.clearCheck()
+        }
+    }
 
     private fun configurarDepartamentoJefe() {
         categoria.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -132,17 +222,55 @@ class SupervisionDiariaScreen(private val activity: Activity) {
         }
         val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoriaFinal()}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text}")
         guardarPerfilActual()
+        FormDraftStore.clear(DRAFT_KEY)
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
     }
+
+
+private fun guardarBorrador() {
+    FormDraftStore.save(DRAFT_KEY, JSONObject()
+        .put("nombre", nombre.text.toString())
+        .put("id_empleado", idEmpleado.text.toString())
+        .put("categoria", categoria.selectedItemPosition)
+        .put("departamento_jefe", departamentoJefe.selectedItemPosition)
+        .put("volante", volante.selectedItemPosition)
+        .put("comentarios", comentarios.text.toString())
+        .put("checks", JSONArray().apply { checks.forEach { (_, g) -> put(selected(g)) } })
+    )
+}
+
+private fun cargarBorrador() {
+    val d = FormDraftStore.get(DRAFT_KEY) ?: return
+    nombre.setText(d.optString("nombre"))
+    idEmpleado.setText(d.optString("id_empleado"))
+    categoria.setSelection(d.optInt("categoria", categoria.selectedItemPosition).coerceAtLeast(0))
+    departamentoJefe.setSelection(d.optInt("departamento_jefe", departamentoJefe.selectedItemPosition).coerceAtLeast(0))
+    volante.setSelection(d.optInt("volante", volante.selectedItemPosition).coerceAtLeast(0))
+    comentarios.setText(d.optString("comentarios"))
+    val arr = d.optJSONArray("checks") ?: return
+    for (i in 0 until kotlin.math.min(arr.length(), checks.size)) {
+        val value = arr.optString(i)
+        val group = checks[i].second
+        for (c in 0 until group.childCount) {
+            val rb = group.getChildAt(c) as? RadioButton ?: continue
+            if (rb.text.toString() == value) group.check(rb.id)
+        }
+    }
+}
 
     private fun cargarUltimoPerfil() {
         UserProfileStore.latest(activity)?.let { aplicarPerfil(it) }
     }
 
     private fun seleccionarPerfil() {
+        guardarBorrador()
         UserProfileStore.showChooser(activity, onSelected = { aplicarPerfil(it) }, onNew = {
             nombre.setText("")
             idEmpleado.setText("")
+            categoria.setSelection(0)
+            volante.setSelection(0)
+            departamentoJefe.setSelection(0)
+            departamentoJefeContainer.visibility = View.GONE
         })
     }
 

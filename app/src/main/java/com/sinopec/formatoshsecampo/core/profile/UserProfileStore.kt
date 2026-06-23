@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
+import com.sinopec.formatoshsecampo.core.debug.DebugConfig
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -75,6 +76,37 @@ object UserProfileStore {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, arr.toString()).apply()
     }
 
+
+fun seedDebugProfiles(context: Context) {
+    if (!DebugConfig.SUPERVISION_DIARIA &&
+        !DebugConfig.TARJETA_OBSERVACION &&
+        !DebugConfig.LISTA_CHEQUEO_SUPERVISION &&
+        !DebugConfig.INSPECCION_CHALECO
+    ) return
+
+    save(context, UserProfile(
+        nombre = "Francisco Alvarado",
+        idEmpleado = "12345",
+        puesto = "Sobrestante",
+        departamentoJefe = "Adquisición (Registro)",
+        areaDepartamento = "Adquisición (Registro)",
+        volante = "V4",
+        brigada = "371",
+        proyecto = "ALACTE"
+    ))
+
+    save(context, UserProfile(
+        nombre = "Bartolo García Rueda de León",
+        idEmpleado = "67890",
+        puesto = "Observador",
+        departamentoJefe = "Topografía",
+        areaDepartamento = "Topografía",
+        volante = "V8",
+        brigada = "371",
+        proyecto = "ALACTE"
+    ))
+}
+
     private fun samePerson(a: UserProfile, b: UserProfile): Boolean {
         val aid = a.idEmpleado.trim()
         val bid = b.idEmpleado.trim()
@@ -83,6 +115,7 @@ object UserProfileStore {
     }
 
     fun showChooser(activity: Activity, onSelected: (UserProfile) -> Unit, onNew: () -> Unit) {
+        seedDebugProfiles(activity)
         val profiles = load(activity)
         if (profiles.isEmpty()) {
             Toast.makeText(activity, "Aún no hay perfiles guardados", Toast.LENGTH_SHORT).show()
