@@ -19,7 +19,7 @@ android {
             "DATA_KEY",
             "\"CAMBIA_ESTA_CLAVE_SUPERVISION_SEGURA_V1\""
         )
-        buildConfigField("String", "LOCAL_EXPIRES_AT", "\"2026-06-25\"")
+        buildConfigField("String", "LOCAL_EXPIRES_AT", "\"2026-07-31\"")
         buildConfigField("String", "VERSION_CONTROL_URL", "\"\"")
     }
 

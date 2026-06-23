@@ -85,7 +85,7 @@ fun seedDebugProfiles(context: Context) {
     ) return
 
     save(context, UserProfile(
-        nombre = "Francisco Alvarado",
+        nombre = "Francisco Smith",
         idEmpleado = "12345",
         puesto = "Sobrestante",
         departamentoJefe = "Adquisición (Registro)",
