@@ -1,36 +1,29 @@
-# Gradle / Android
+# Android / Gradle
 .gradle/
 build/
 **/build/
+captures/
 .externalNativeBuild/
 .cxx/
-captures/
-
-# Android Studio / IntelliJ
-.idea/
 *.iml
-*.ipr
-*.iws
 
-# Local machine files
-local.properties
+# Android Studio
+.idea/
 .DS_Store
-Thumbs.db
 
-# Generated artifacts
+# Local machine
+local.properties
+
+# Releases / signing
 *.apk
 *.aab
-*.apks
-*.idsig
-
-# Signing keys / secrets
 *.jks
 *.keystore
 
-# Logs / temp
-*.log
-*.tmp
-*.bak
+# Temporary archives
+*.zip
+*.rar
+*.7z
 
-# Kotlin / Java generated
-out/
+# Logs
+*.log

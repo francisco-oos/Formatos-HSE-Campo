@@ -204,15 +204,18 @@ class SimplePdfService(private val activity: Activity) {
         }
 
         // Comentarios.
+        // Ajuste Beta: el cuadro de comentarios de este formato es bajo; si se escribe mucho,
+        // una fuente grande y saltos amplios provocan que el texto se corte visualmente.
+        // Se usa texto más pequeño, más líneas y menor separación sin tocar el JSON cifrado.
         val hydrationY = jobsY + 42f + 2 * 39f + 7f
         val commentTop = hydrationY + 42f
         p.color = blue
         p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
-        p.textSize = 12.5f
-        var cy = commentTop + 32f
-        wrapText(json.optString("comentarios"), 46).take(3).forEach { line ->
+        p.textSize = 9.8f
+        var cy = commentTop + 18f
+        wrapText(json.optString("comentarios"), 58).take(4).forEach { line ->
             canvas.drawText(line, left + 10f, cy, p)
-            cy += 18f
+            cy += 13f
         }
 
         // QR discreto con folio. El JSON cifrado NO va en el QR; va embebido al final del PDF.
@@ -1033,7 +1036,7 @@ class SimplePdfService(private val activity: Activity) {
     // -------------------------------------------------------------------------
 
     private fun addPhotoPages(doc: PdfDocument, dir: File, photos: List<PhotoItem>) {
-        photos.take(10).forEachIndexed { idx, item ->
+        photos.take(5).forEachIndexed { idx, item ->
             val page = doc.startPage(PdfDocument.PageInfo.Builder(595, 842, idx + 2).create())
             val canvas = page.canvas
             val paint = Paint(Paint.ANTI_ALIAS_FLAG)

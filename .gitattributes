@@ -5,15 +5,16 @@
 *.xml text eol=lf
 *.md text eol=lf
 *.json text eol=lf
-*.gradle text eol=lf
 *.properties text eol=lf
+*.gradle text eol=lf
 
 *.png binary
 *.jpg binary
 *.jpeg binary
 *.webp binary
 *.pdf binary
-*.jks binary
 *.apk binary
+*.aab binary
+*.jks binary
 *.zip binary
 *.rar binary

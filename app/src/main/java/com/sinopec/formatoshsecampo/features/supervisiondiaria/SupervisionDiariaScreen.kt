@@ -24,6 +24,7 @@ import android.widget.ScrollView
 /** Formato equivalente a la app estable Supervisión Segura, dejado como módulo separado. */
 class SupervisionDiariaScreen(private val activity: Activity) {
     private val DRAFT_KEY = "supervision_diaria"
+    private val COMENTARIOS_MAX_CHARS = 220
     private val nombre = Ui.input(activity, "Nombre")
     private val idEmpleado = Ui.input(activity, "ID empleado")
     private val categoria = Ui.spinner(activity, FormOptions.puestos)
@@ -35,7 +36,9 @@ class SupervisionDiariaScreen(private val activity: Activity) {
         addView(departamentoJefe)
     }
     private val volante = Ui.spinner(activity, FormOptions.volantes)
-    private val comentarios = Ui.input(activity, "Comentarios", 3)
+    private val comentarios = Ui.input(activity, "Comentarios (máx. 220 caracteres)", 3).apply {
+        filters = arrayOf(android.text.InputFilter.LengthFilter(COMENTARIOS_MAX_CHARS))
+    }
     private val checks = mutableListOf<Pair<String, RadioGroup>>()
 
     /*
@@ -215,12 +218,12 @@ class SupervisionDiariaScreen(private val activity: Activity) {
             override val folio = "SS-${dateCompact()}-${System.currentTimeMillis().toString().takeLast(6)}"
             override fun toJson() = baseJson(format, folio).apply {
                 put("datos_generales", JSONObject().put("nombre", nombre.text.toString()).put("id_empleado", idEmpleado.text.toString()).put("categoria", categoriaFinal()).put("departamento_jefe", departamentoJefe.selectedItem.toString()).put("volante", volante.selectedItem.toString()))
-                put("comentarios", comentarios.text.toString())
+                put("comentarios", comentarios.text.toString().take(COMENTARIOS_MAX_CHARS))
                 put("checklist", JSONArray().apply { checks.forEach { (q, g) -> put(JSONObject().put("pregunta", q).put("respuesta", selected(g))) } })
                 put("fotos_anexas", photos.photos.size)
             }
         }
-        val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoriaFinal()}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text}")
+        val lines = listOf("Nombre: ${nombre.text}", "ID: ${idEmpleado.text}", "Categoría: ${categoriaFinal()}", "Volante: ${volante.selectedItem}", "Comentarios: ${comentarios.text.toString().take(COMENTARIOS_MAX_CHARS)}")
         guardarPerfilActual()
         FormDraftStore.clear(DRAFT_KEY)
         SimplePdfService(activity).createBasicReportPdf(report, lines, photos.photos).also { SimplePdfService(activity).sharePdf(it) }
@@ -234,7 +237,7 @@ private fun guardarBorrador() {
         .put("categoria", categoria.selectedItemPosition)
         .put("departamento_jefe", departamentoJefe.selectedItemPosition)
         .put("volante", volante.selectedItemPosition)
-        .put("comentarios", comentarios.text.toString())
+        .put("comentarios", comentarios.text.toString().take(COMENTARIOS_MAX_CHARS))
         .put("checks", JSONArray().apply { checks.forEach { (_, g) -> put(selected(g)) } })
     )
 }
@@ -246,7 +249,7 @@ private fun cargarBorrador() {
     categoria.setSelection(d.optInt("categoria", categoria.selectedItemPosition).coerceAtLeast(0))
     departamentoJefe.setSelection(d.optInt("departamento_jefe", departamentoJefe.selectedItemPosition).coerceAtLeast(0))
     volante.setSelection(d.optInt("volante", volante.selectedItemPosition).coerceAtLeast(0))
-    comentarios.setText(d.optString("comentarios"))
+    comentarios.setText(d.optString("comentarios").take(COMENTARIOS_MAX_CHARS))
     val arr = d.optJSONArray("checks") ?: return
     for (i in 0 until kotlin.math.min(arr.length(), checks.size)) {
         val value = arr.optString(i)

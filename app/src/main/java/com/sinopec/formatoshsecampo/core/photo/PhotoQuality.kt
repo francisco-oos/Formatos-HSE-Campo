@@ -11,6 +11,6 @@ object PhotoQuality {
     // AJUSTE MANUAL SECUNDARIO: lado máximo en pixeles antes de guardar/anexar al PDF.
     const val MAX_IMAGE_SIDE_PX: Int = 1600
 
-    // Límite inicial para no hacer PDFs demasiado pesados en campo.
-    const val MAX_PHOTOS_PER_REPORT: Int = 10
+    // Límite solicitado para piloto: máximo 5 evidencias por reporte.
+    const val MAX_PHOTOS_PER_REPORT: Int = 5
 }
