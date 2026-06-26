@@ -44,7 +44,12 @@ object FormOptions {
         "Logística",
         "Operaciones",
         "Inmuebles",
-        "QC"
+        "QC",
+        "Administracion",
+        "HSE",
+        "RRHH",
+        "Transportes",
+        "Comedor"
     )
 
     val volantes = listOf(
