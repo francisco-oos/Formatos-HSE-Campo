@@ -60,3 +60,16 @@ buildConfigField("String", "LOCAL_EXPIRES_AT", "\"2026-12-31\"")
 ## Próximo paso recomendado
 
 Abrir en Android Studio, dejar que sincronice Gradle y probar primero el menú + generación PDF de cada formato.
+
+## v20 - corrección compartir con Hermes
+
+- Corrección de cierre al pulsar Generar y compartir.
+- El perfil operativo se cifra con una clave AES válida de 16 bytes.
+- Si el cifrado del perfil falla, el PDF se sigue compartiendo normalmente.
+- No se agrega JSON extra al archivo PDF; el PDF conserva su JSON cifrado embebido original para el lector de escritorio.
+- El perfil operativo solo viaja como extra seguro entre apps propias.
+
+## v21 perfil operativo
+- Se amplió el perfil operativo enviado a Hermes con nombre, ID, puesto/categoría, proyecto, brigada, volante y área/departamento.
+- El perfil también queda dentro del JSON cifrado embebido como `perfil_operativo` sin obligar a imprimir esos campos en el PDF.
+- El formato LISTA_SUPERVISION_SEGURA se identifica como "Check Supervisión Segura" al compartir.

@@ -6,6 +6,8 @@ import android.graphics.*
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
+import android.widget.Toast
 import android.util.Base64
 import androidx.core.content.FileProvider
 import com.google.zxing.BarcodeFormat
@@ -13,6 +15,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.sinopec.formatoshsecampo.core.crypto.CryptoService
 import com.sinopec.formatoshsecampo.core.photo.PhotoItem
 import com.sinopec.formatoshsecampo.core.photo.PhotoManager
+import com.sinopec.formatoshsecampo.core.profile.UserProfileStore
+import com.sinopec.formatoshsecampo.core.profile.HermesSecurePayload
 import com.sinopec.formatoshsecampo.domain.HseFormat
 import com.sinopec.formatoshsecampo.domain.HseReport
 import org.json.JSONArray
@@ -40,7 +44,28 @@ class SimplePdfService(private val activity: Activity) {
         val doc = PdfDocument()
 
         // El JSON se obtiene una sola vez para que lo visible y lo embebido correspondan al mismo reporte.
+        // También se enriquece con el perfil operativo aunque no necesariamente se imprima en el PDF.
         val json = report.toJson()
+        UserProfileStore.latest(activity)?.let { p ->
+            json.put("perfil_operativo", JSONObject()
+                .put("schema", "hermes_operational_profile_v1")
+                .put("source_app", "Formatos HSE Campo")
+                .put("nombre", p.nombre)
+                .put("name", p.nombre)
+                .put("id_empleado", p.idEmpleado)
+                .put("employeeId", p.idEmpleado)
+                .put("puesto", p.puesto.ifBlank { "Otro" })
+                .put("categoria", p.puesto.ifBlank { "Otro" })
+                .put("category", p.puesto.ifBlank { "Otro" })
+                .put("departamento_jefe", p.departamentoJefe)
+                .put("area_departamento", p.areaDepartamento)
+                .put("volante", p.volante)
+                .put("brigada", p.brigada.ifBlank { "371" })
+                .put("brigade", p.brigada.ifBlank { "371" })
+                .put("proyecto", p.proyecto.ifBlank { "ALACTE" })
+                .put("project", p.proyecto.ifBlank { "ALACTE" })
+            )
+        }
 
         when (report.format) {
             HseFormat.SUPERVISION_DIARIA -> addSupervisionSeguraPage(doc, json, report.folio)
@@ -62,13 +87,61 @@ class SimplePdfService(private val activity: Activity) {
 
     fun sharePdf(file: File) {
         val uri: Uri = FileProvider.getUriForFile(activity, "${activity.packageName}.fileprovider", file)
+        val latestProfile = UserProfileStore.latest(activity)
+        val profileJson = latestProfile?.let { p ->
+            // Perfil operativo completo para apps propias.
+            // No se imprime obligatoriamente en el PDF y no modifica el archivo adjunto.
+            // Hermes lo usa como dirección/contexto operativo para evitar recaptura.
+            JSONObject()
+                .put("source_schema", "hermes_operational_profile_v1")
+                .put("source_app", "Formatos HSE Campo")
+                .put("name", p.nombre)
+                .put("nombre", p.nombre)
+                .put("employeeId", p.idEmpleado)
+                .put("id_empleado", p.idEmpleado)
+                .put("category", p.puesto.ifBlank { "Otro" })
+                .put("categoria", p.puesto.ifBlank { "Otro" })
+                .put("puesto", p.puesto.ifBlank { "Otro" })
+                .put("departamento_jefe", p.departamentoJefe)
+                .put("area_departamento", p.areaDepartamento)
+                .put("volante", p.volante)
+                .put("brigade", p.brigada.ifBlank { "371" })
+                .put("brigada", p.brigada.ifBlank { "371" })
+                .put("project", p.proyecto.ifBlank { "ALACTE" })
+                .put("proyecto", p.proyecto.ifBlank { "ALACTE" })
+                .toString()
+        }
+        val profileSecure = profileJson?.let { json ->
+            runCatching { HermesSecurePayload.encrypt(json) }
+                .onFailure { Log.e("HermesBridge", "No se pudo cifrar el perfil operativo; se compartirá solo el PDF", it) }
+                .getOrNull()
+        }
+        val formatCode = file.name.substringBefore('_', "HSE")
+        val formatName = when {
+            formatCode.contains("TOS", true) || file.name.contains("TARJETA", true) -> "Tarjeta TOS"
+            formatCode.contains("CHALECO", true) -> "Inspección de chaleco"
+            formatCode.contains("LISTA", true) || file.name.contains("LISTA", true) -> "Check Supervisión Segura"
+            formatCode.contains("SUPERVISION", true) -> "Supervisión segura"
+            else -> "Formato HSE"
+        }
         val send = Intent(Intent.ACTION_SEND).apply {
             type = "application/pdf"
             putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra("com.frank.hermes.EXTRA_SOURCE_APP", "Formatos HSE Campo")
+            putExtra("com.frank.hermes.EXTRA_SOURCE_OWNED", true)
+            putExtra("com.frank.hermes.EXTRA_DESTINATION", "HSE")
+            putExtra("com.frank.hermes.EXTRA_TYPE_CODE", formatCode)
+            putExtra("com.frank.hermes.EXTRA_TYPE_NAME", formatName)
+            // Perfil operativo cifrado para apps propias. No se agrega al archivo ni se expone a apps ajenas.
+            profileSecure?.let { putExtra("com.frank.hermes.EXTRA_PROFILE_SECURE", it) }
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            // No se fuerza WhatsApp para que también aparezca WhatsApp Business, correo, Drive, etc.
         }
-        activity.startActivity(Intent.createChooser(send, "Compartir formato HSE"))
+        runCatching {
+            activity.startActivity(Intent.createChooser(send, "Compartir formato HSE"))
+        }.onFailure {
+            Log.e("HermesBridge", "Error al abrir el menú de compartir", it)
+            Toast.makeText(activity, "No se pudo abrir el menú de compartir", Toast.LENGTH_LONG).show()
+        }
     }
 
     // -------------------------------------------------------------------------
