@@ -11,8 +11,9 @@ captures/
 .idea/
 .DS_Store
 
-# Local machine
+# Local machine / secretos
 local.properties
+hse-secrets.properties
 
 # Releases / signing
 *.apk
